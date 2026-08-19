@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Angle 0 = Dari Kiri ke Kanan -->
+    <!-- StartColor (Kiri): Hitam 85% opacity (Lebih pekat) -->
+    <!-- EndColor (Kanan): Transparan penuh (Agar gambar kanan jelas) -->
+    <gradient
+        android:angle="0"
+        android:startColor="#D9000000"
+        android:centerColor="#73000000"
+        android:endColor="#00000000" />
+</shape>

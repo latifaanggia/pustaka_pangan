@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background Foto Banner -->
+    <ImageView
+        android:id="@+id/imgBannerBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_vol_04" />
+
+    <!-- Gradient Overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_gradient_overlay" />
+
+    <!-- Teks Judul -->
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Akses Semua Majalah Digital"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:fontFamily="@font/inter_semibold"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
+        android:shadowColor="#99000000"
+        android:shadowDx="1"
+        android:shadowDy="2"
+        android:shadowRadius="4"
+        app:layout_constraintBottom_toTopOf="@id/tvBannerSubtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Teks Subjudul -->
+    <TextView
+        android:id="@+id/tvBannerSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Mulai dari Rp 15.000 / Edisi"
+        android:textColor="#E0E0E0"
+        android:textSize="12sp"
+        android:fontFamily="@font/inter"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp"
+        android:shadowColor="#99000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        app:layout_constraintBottom_toTopOf="@id/btnBeliSekarang"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Tombol Beli -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBeliSekarang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Beli Sekarang"
+        android:textColor="#1E1E1E"
+        android:textSize="12sp"
+        android:fontFamily="@font/inter_semibold"
+        android:textAllCaps="false"
+        app:backgroundTint="#FFFFFF"
+        app:cornerRadius="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
