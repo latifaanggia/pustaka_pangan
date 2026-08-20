@@ -52,28 +52,150 @@
         android:elevation="16dp"
         android:weightSum="4">
 
-        <LinearLayout
+        <!-- MENU 1: BERANDA (STATE: AKTIF) -->
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_bell"
-                app:tint="#D32F2F"/>
-            <TextView
+            android:layout_weight="1">
+
+            <!-- Indikator Merah Menyala -->
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Beranda"
-                android:textSize="10sp"
-                android:textColor="#D32F2F"
-                android:fontFamily="@font/inter_semibold"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_beranda"
+                    app:tint="#D32F2F"/> <!-- Icon Merah -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Beranda"
+                    android:textSize="12sp"
+                    android:textColor="#D32F2F"
+                    android:fontFamily="@font/inter_semibold"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
 
-        <!-- Tambahkan ikon lainnya (Majalah, Koleksi, Akun) di sini sesuai kebutuhan -->
+        <!-- MENU 2: MAJALAH (STATE: TIDAK AKTIF) -->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <!-- Indikator disembunyikan (invisible) karena tidak aktif -->
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_majalah"
+                    app:tint="#A0A0A0"/> <!-- Icon Abu-abu -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Majalah"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- MENU 3: KOLEKSI (STATE: TIDAK AKTIF) -->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_koleksi"
+                    app:tint="#A0A0A0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Koleksi"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- MENU 4: AKUN (STATE: TIDAK AKTIF) -->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_akun"
+                    app:tint="#A0A0A0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Akun"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -96,7 +218,7 @@
             <!-- SECTION: HERO BANNER PROMO                -->
             <!-- ========================================= -->
 
-            <!-- Kartu Banner (Sekarang isinya ViewPager2) -->
+            <!-- Kartu Banner -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
@@ -104,15 +226,16 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
 
-                <!-- Ini dia Mesin Proyektor-nya -->
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPagerHero"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    tools:listitem="@layout/item_hero_banner" />
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Titik-Titik Indikator Slider (Sudah Dikasih ID dot1, dot2, dot3) -->
+            <!-- Titik-Titik Indikator Slider -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -184,109 +307,103 @@
             <!-- ========================================= -->
             <!-- SECTION: SLIDER MAJALAH TERBARU           -->
             <!-- ========================================= -->
-            <HorizontalScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:clipToPadding="false"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:paddingBottom="16dp">
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="24dp"
+                android:weightSum="2"
+                android:baselineAligned="false">
 
+                <!-- ITEM MAJALAH TERBARU 1 -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
 
-                    <!-- ITEM MAJALAH TERBARU 1 -->
-                    <!-- Dibungkus LinearLayout vertikal agar teks bisa di bawah gambar -->
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="230dp"
+                        app:cardCornerRadius="8dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#DFDFDF"
+                        app:cardElevation="4dp"
+                        android:outlineAmbientShadowColor="#14000000"
+                        android:outlineSpotShadowColor="#14000000">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/img_vol_07"
+                            android:scaleType="centerCrop" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
+                        android:text="FRI VOL XXI/07 2026"
+                        android:textSize="14sp"
+                        android:textColor="#1E1E1E"
+                        android:fontFamily="@font/inter_semibold"
+                        android:layout_marginTop="12dp" />
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="148dp"
-                            android:layout_height="203dp"
-                            app:cardCornerRadius="8dp"
-                            app:strokeWidth="1dp"
-                            app:strokeColor="#DFDFDF"
-                            app:cardElevation="4dp"
-                            android:outlineAmbientShadowColor="#14000000"
-                            android:outlineSpotShadowColor="#14000000">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_vol_07"
-                                android:scaleType="centerCrop" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/07 2026"
-                            android:textSize="12sp"
-                            android:textColor="#1E1E1E"
-                            android:fontFamily="@font/inter_semibold"
-                            android:layout_marginTop="12dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rp20.000"
-                            android:textSize="12sp"
-                            android:textColor="#888888"
-                            android:fontFamily="@font/inter"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                    <!-- ITEM MAJALAH TERBARU 2 -->
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="148dp"
-                            android:layout_height="203dp"
-                            app:cardCornerRadius="8dp"
-                            app:strokeWidth="1dp"
-                            app:strokeColor="#DFDFDF"
-                            app:cardElevation="4dp"
-                            android:outlineAmbientShadowColor="#14000000"
-                            android:outlineSpotShadowColor="#14000000">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_vol_06"
-                                android:scaleType="centerCrop" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/06 2026"
-                            android:textSize="12sp"
-                            android:textColor="#1E1E1E"
-                            android:fontFamily="@font/inter_semibold"
-                            android:layout_marginTop="12dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rp20.000"
-                            android:textSize="12sp"
-                            android:textColor="#888888"
-                            android:fontFamily="@font/inter"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
+                        android:text="Rp20.000"
+                        android:textSize="12sp"
+                        android:textColor="#888888"
+                        android:fontFamily="@font/inter"
+                        android:layout_marginTop="4dp" />
                 </LinearLayout>
-            </HorizontalScrollView>
+
+                <!-- ITEM MAJALAH TERBARU 2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="230dp"
+                        app:cardCornerRadius="8dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#DFDFDF"
+                        app:cardElevation="4dp"
+                        android:outlineAmbientShadowColor="#14000000"
+                        android:outlineSpotShadowColor="#14000000">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/img_vol_06"
+                            android:scaleType="centerCrop" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FRI VOL XXI/06 2026"
+                        android:textSize="14sp"
+                        android:textColor="#1E1E1E"
+                        android:fontFamily="@font/inter_semibold"
+                        android:layout_marginTop="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp20.000"
+                        android:textSize="12sp"
+                        android:textColor="#888888"
+                        android:fontFamily="@font/inter"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+            </LinearLayout>
 
             <!-- ========================================= -->
             <!-- SECTION: POPULER                          -->
