@@ -324,6 +324,7 @@
                     android:layout_marginEnd="8dp">
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardMajalahTerbaru1"
                         android:layout_width="match_parent"
                         android:layout_height="230dp"
                         app:cardCornerRadius="8dp"

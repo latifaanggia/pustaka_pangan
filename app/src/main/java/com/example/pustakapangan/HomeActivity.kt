@@ -1,5 +1,6 @@
 package com.example.pustakapangan
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +17,14 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        // 3. LOGIKA KLIK MAJALAH ADA DI SINI
+        val cardMajalahTerbaru1 = findViewById<MaterialCardView>(R.id.cardMajalahTerbaru1)
+
+        cardMajalahTerbaru1.setOnClickListener {
+            val intent = Intent(this, DetailMajalahActivity::class.java)
+            startActivity(intent)
+        }
 
         // 1. Panggil komponen dari XML
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerHero)
