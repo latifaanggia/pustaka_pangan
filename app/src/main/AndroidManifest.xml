@@ -22,6 +22,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".HomeActivity" android:exported="false"/>
-    </application>
 
+        <!-- Daftarkan halaman Detail Majalah di sini -->
+        <activity
+            android:name=".DetailMajalahActivity"
+            android:exported="false" />
+    </application>
 </manifest>
