@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -18,32 +19,44 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        // 3. LOGIKA KLIK MAJALAH ADA DI SINI
+        // Detail Majalah
         val cardMajalahTerbaru1 = findViewById<MaterialCardView>(R.id.cardMajalahTerbaru1)
-
         cardMajalahTerbaru1.setOnClickListener {
             val intent = Intent(this, DetailMajalahActivity::class.java)
             startActivity(intent)
         }
 
-        // 1. Panggil komponen dari XML
+        // Menu Akun
+        val navAkun = findViewById<RelativeLayout>(R.id.navAkun)
+        navAkun.setOnClickListener {
+            val intent = Intent(this, AkunActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Menu Koleksi
+        val navKoleksi = findViewById<RelativeLayout>(R.id.navKoleksi)
+        navKoleksi.setOnClickListener {
+            val intent = Intent(this, KoleksiActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        // Banner Slider
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerHero)
         val dot1 = findViewById<MaterialCardView>(R.id.dot1)
         val dot2 = findViewById<MaterialCardView>(R.id.dot2)
         val dot3 = findViewById<MaterialCardView>(R.id.dot3)
         val dots = listOf(dot1, dot2, dot3)
 
-        // 2. Siapkan 3 Gambar Dummy untuk Slider (Pastikan gambar ini ada di drawable)
         val dummyImages = listOf(
             R.drawable.img_vol_04, // Slide 1
-            R.drawable.img_vol_05, // Slide 2 (ganti dengan gambar lain)
-            R.drawable.img_vol_06  // Slide 3 (ganti dengan gambar lain)
+            R.drawable.img_vol_05, // Slide 2
+            R.drawable.img_vol_06  // Slide 3
         )
 
-        // 3. Masukkan gambar ke dalam ViewPager (Proyektor)
         viewPager.adapter = HeroAdapter(dummyImages)
 
-        // 4. Logika ketika Banner digeser (Update warna & ukuran titik)
+        // Banner Digeser
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -51,11 +64,9 @@ class HomeActivity : AppCompatActivity() {
                 for (i in dots.indices) {
                     val params = dots[i].layoutParams
                     if (i == position) {
-                        // Jika aktif: Panjang 24dp, warna Merah
                         params.width = (24 * resources.displayMetrics.density).toInt()
                         dots[i].setCardBackgroundColor(Color.parseColor("#E53935"))
                     } else {
-                        // Jika tidak aktif: Panjang 8dp, warna Abu-abu
                         params.width = (8 * resources.displayMetrics.density).toInt()
                         dots[i].setCardBackgroundColor(Color.parseColor("#E0E0E0"))
                     }
@@ -65,9 +76,6 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-    // =======================================================
-    // ADAPTER: Ini adalah mesin pencetak slide template-nya
-    // =======================================================
     class HeroAdapter(private val images: List<Int>) : RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {
 
         class HeroViewHolder(view: View) : RecyclerView.ViewHolder(view) {

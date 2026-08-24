@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F6F8"
+    android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
+
+            <!-- HEADER -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="16dp">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/logo_fri"
+                    android:layout_centerVertical="true"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_search"
+                        android:layout_marginEnd="12dp"/>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_bell"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- SECTION: TERAKHIR DIBACA -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Terakhir Dibaca"
+                android:textColor="#1E1E1E"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="24dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Cover Majalah Mini -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="60dp"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="6dp"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_vol_04" /> <!-- Ganti dengan cover kulinologi -->
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Judul & Tombol Lanjut Baca -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="FRI VOL XXI/07 2026"
+                            android:textColor="#1E1E1E"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="8dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_play_green"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lanjutkan Membaca"
+                                android:textColor="#00A859"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:layout_marginStart="4dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- SECTION: TAHUN 2026 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tahun 2026"
+                android:textColor="#1E1E1E"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="24dp"/>
+
+            <!-- Horizontal Scroll  -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="24dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- ITEM MAJALAH 1 (Belum Diunduh) -->
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="190dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/img_vol_06" /> <!-- Cover Susu -->
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="FRI VOL XXI/06 2026"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="12dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+
+                        <!-- Tombol Aksi -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <!-- Tombol Baca -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#E5E7EB"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Baca"
+                                    android:textColor="#1E1E1E"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Tombol Unduh -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginStart="8dp"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#E5E7EB"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_download"
+                                    app:tint="#1E1E1E"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- ITEM MAJALAH 2 (Sudah Diunduh / Hijau) -->
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="190dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/img_vol_05" /> <!-- Cover Packaging -->
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="FRI VOL XXI/05 2026"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="12dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <!-- Tombol Baca Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#E8F5E9"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Baca"
+                                    android:textColor="#00A859"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Tombol Centang Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginStart="8dp"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_check_green"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- ITEM MAJALAH 3 (Sudah Diunduh / Hijau) -->
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="190dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/img_vol_04" /> <!-- Cover Packaging -->
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="FRI VOL XXI/04 2026"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="12dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <!-- Tombol Baca Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#E8F5E9"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Baca"
+                                    android:textColor="#00A859"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Tombol Centang Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginStart="8dp"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_check_green"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- SECTION: TAHUN 2025 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tahun 2025"
+                android:textColor="#1E1E1E"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="24dp"/>
+
+            <!-- Horizontal Scroll  -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="24dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- ITEM MAJALAH 1 (Belum Diunduh) -->
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="190dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/img_vol_06" /> <!-- Cover Susu -->
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="FRI VOL XXI/06 2026"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="12dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+
+                        <!-- Tombol Aksi -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <!-- Tombol Baca -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#E5E7EB"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Baca"
+                                    android:textColor="#1E1E1E"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Tombol Unduh -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginStart="8dp"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#E5E7EB"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_download"
+                                    app:tint="#1E1E1E"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- ITEM MAJALAH 2 (Sudah Diunduh / Hijau) -->
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="190dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/img_vol_05" /> <!-- Cover Packaging -->
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="FRI VOL XXI/05 2026"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="12dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <!-- Tombol Baca Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#E8F5E9"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Baca"
+                                    android:textColor="#00A859"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Tombol Centang Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginStart="8dp"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_check_green"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- ITEM MAJALAH 3 (Sudah Diunduh / Hijau) -->
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="190dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/img_vol_04" /> <!-- Cover Packaging -->
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="FRI VOL XXI/04 2026"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="12dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <!-- Tombol Baca Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#E8F5E9"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Baca"
+                                    android:textColor="#00A859"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Tombol Centang Hijau -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginStart="8dp"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:strokeColor="#00A859"
+                                app:strokeWidth="1dp"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="0dp">
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_check_green"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- CUSTOM BOTTOM NAVIGATION -->
+    <LinearLayout
+        android:id="@+id/bottomNavLayout"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        android:elevation="16dp"
+        android:weightSum="4">
+
+        <!-- MENU 1: BERANDA (STATE: TIDAK AKTIF) -->
+        <RelativeLayout
+            android:id="@+id/navBeranda"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator"
+                android:visibility="invisible" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_beranda"
+                    app:tint="#A0A0A0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Beranda"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- MENU 2: MAJALAH (STATE: TIDAK AKTIF) -->
+        <RelativeLayout
+            android:id="@+id/navMajalah"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator"
+                android:visibility="invisible" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_majalah"
+                    app:tint="#A0A0A0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Majalah"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- MENU 3: KOLEKSI (STATE: AKTIF MERAH) -->
+        <RelativeLayout
+            android:id="@+id/navKoleksi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_koleksi"
+                    app:tint="#D32F2F"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Koleksi"
+                    android:textSize="12sp"
+                    android:textColor="#D32F2F"
+                    android:fontFamily="@font/inter_semibold"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- MENU 4: AKUN (STATE: TIDAK AKTIF) -->
+        <RelativeLayout
+            android:id="@+id/navAkun"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_navbar_indicator"
+                android:visibility="invisible" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_akun"
+                    app:tint="#A0A0A0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Akun"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -59,7 +59,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <!-- Indikator Merah Menyala -->
             <View
                 android:layout_width="48dp"
                 android:layout_height="6dp"
@@ -77,7 +76,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_beranda"
-                    app:tint="#D32F2F"/> <!-- Icon Merah -->
+                    app:tint="#D32F2F"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,7 +94,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <!-- Indikator disembunyikan (invisible) karena tidak aktif -->
             <View
                 android:layout_width="48dp"
                 android:layout_height="6dp"
@@ -128,6 +126,7 @@
 
         <!-- MENU 3: KOLEKSI (STATE: TIDAK AKTIF) -->
         <RelativeLayout
+            android:id="@+id/navKoleksi"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -164,6 +163,7 @@
 
         <!-- MENU 4: AKUN (STATE: TIDAK AKTIF) -->
         <RelativeLayout
+            android:id="@+id/navAkun"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">

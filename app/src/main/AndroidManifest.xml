@@ -21,11 +21,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity" android:exported="false"/>
-
-        <!-- Daftarkan halaman Detail Majalah di sini -->
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false"/>
         <activity
             android:name=".DetailMajalahActivity"
             android:exported="false" />
+        <activity
+            android:name=".AkunActivity" />
+        <activity
+            android:name=".CaraMembeliActivity" />
+        <activity
+            android:name=".HubungiKamiActivity" />
+        <activity
+            android:name=".RiwayatTopUpActivity" />
+        <activity
+            android:name=".UbahPasswordActivity" />
+        <activity
+            android:name=".KoleksiActivity" />
+
     </application>
 </manifest>
