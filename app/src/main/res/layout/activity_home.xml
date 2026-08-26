@@ -90,6 +90,7 @@
 
         <!-- MENU 2: MAJALAH (STATE: TIDAK AKTIF) -->
         <RelativeLayout
+            android:id="@+id/navMajalah"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -112,7 +113,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_majalah"
-                    app:tint="#A0A0A0"/> <!-- Icon Abu-abu -->
+                    app:tint="#A0A0A0"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -215,11 +216,7 @@
             android:paddingTop="16dp"
             android:paddingBottom="24dp">
 
-            <!-- ========================================= -->
-            <!-- SECTION: HERO BANNER PROMO                -->
-            <!-- ========================================= -->
-
-            <!-- Kartu Banner -->
+            <!-- Hero Banner -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
@@ -232,11 +229,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     xmlns:tools="http://schemas.android.com/tools"
-                    tools:listitem="@layout/item_hero_banner" />
+                    tools:listitem="@layout/hero_beranda" />
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Titik-Titik Indikator Slider -->
+            <!-- Indikator Slider -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -293,7 +290,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true" />
 
-                <!-- Teks Kanan (Bisa diklik nanti) -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -338,7 +334,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_vol_07"
+                            android:src="@drawable/img_2026_vol_07"
                             android:scaleType="centerCrop" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -382,7 +378,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_vol_06"
+                            android:src="@drawable/img_2026_vol_06"
                             android:scaleType="centerCrop" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -450,7 +446,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_vol_07"
+                            android:src="@drawable/img_2026_vol_07"
                             android:scaleType="centerCrop" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -469,7 +465,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_vol_06"
+                            android:src="@drawable/img_2026_vol_06"
                             android:scaleType="centerCrop" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -488,7 +484,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_vol_05"
+                            android:src="@drawable/img_2026_vol_05"
                             android:scaleType="centerCrop" />
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>

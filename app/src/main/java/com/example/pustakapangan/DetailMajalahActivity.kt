@@ -13,12 +13,12 @@ class DetailMajalahActivity : AppCompatActivity() {
     private val totalHalaman = 6
 
     private val daftarGambar = listOf(
-        R.drawable.img_vol_07,       // Halaman 1 (Cover)
-        R.drawable.img_vol_07_hal2,  // Halaman 2
-        R.drawable.img_vol_07_hal3,  // Halaman 3
-        R.drawable.img_vol_07_hal4,  // Halaman 4
-        R.drawable.img_vol_07_hal5,  // Halaman 5
-        R.drawable.img_vol_07_hal6   // Halaman 6
+        R.drawable.img_2026_vol_07,       // Halaman 1 (Cover)
+        R.drawable.img_2026_vol_07_hal2,  // Halaman 2
+        R.drawable.img_2026_vol_07_hal3,  // Halaman 3
+        R.drawable.img_2026_vol_07_hal4,  // Halaman 4
+        R.drawable.img_2026_vol_07_hal5,  // Halaman 5
+        R.drawable.img_2026_vol_07_hal6   // Halaman 6
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

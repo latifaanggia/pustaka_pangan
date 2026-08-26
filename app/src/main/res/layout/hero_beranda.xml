@@ -9,11 +9,11 @@
 
     <!-- Background Foto Banner -->
     <ImageView
-        android:id="@+id/imgBannerBg"
+        android:id="@+id/imgBannerBgBeranda"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_vol_04" />
+        android:src="@drawable/img_2026_vol_04" />
 
     <!-- Gradient Overlay -->
     <View
@@ -23,6 +23,7 @@
 
     <!-- Teks Judul -->
     <TextView
+        android:id="@+id/tvBannerTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Akses Semua Majalah Digital"

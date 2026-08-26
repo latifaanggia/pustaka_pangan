@@ -20,17 +20,18 @@ class KoleksiActivity : AppCompatActivity() {
             finish()
         }
 
-        // Menu Majalah
-        val navMajalah = findViewById<RelativeLayout>(R.id.navMajalah)
-        navMajalah.setOnClickListener {
-            Toast.makeText(this, "Halaman Majalah belum dibuat", Toast.LENGTH_SHORT).show()
-        }
-
-        // Menu
+        // Menu Akun
         val navAkun = findViewById<RelativeLayout>(R.id.navAkun)
         navAkun.setOnClickListener {
             val intent = Intent(this, AkunActivity::class.java)
             startActivity(intent)
+            finish()
+        }
+
+        // Menu Majalah
+        val navMajalah = findViewById<RelativeLayout>(R.id.navMajalah)
+        navMajalah.setOnClickListener {
+            startActivity(Intent(this, MajalahActivity::class.java))
             finish()
         }
     }

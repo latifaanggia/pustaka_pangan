@@ -69,7 +69,7 @@
                 android:id="@+id/imgCover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/img_vol_07"
+                android:src="@drawable/img_2026_vol_07"
                 android:scaleType="centerCrop" />
         </com.google.android.material.card.MaterialCardView>
 
@@ -164,7 +164,7 @@
                         android:id="@+id/imgPratinjau"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/img_vol_07"
+                        android:src="@drawable/img_2026_vol_07"
                         android:scaleType="centerCrop" />
                 </com.google.android.material.card.MaterialCardView>
 

@@ -392,7 +392,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- CUSTOM BOTTOM NAVIGATION -->
+    <!-- BOTTOM NAVIGATION -->
     <LinearLayout
         android:id="@+id/bottomNavLayout"
         android:layout_width="match_parent"
@@ -442,6 +442,7 @@
 
         <!-- MENU 2: MAJALAH (STATE: TIDAK AKTIF) -->
         <RelativeLayout
+            android:id="@+id/navMajalah"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">

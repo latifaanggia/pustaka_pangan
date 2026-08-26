@@ -39,6 +39,8 @@
             android:name=".UbahPasswordActivity" />
         <activity
             android:name=".KoleksiActivity" />
+        <activity
+            android:name=".MajalahActivity" />
 
     </application>
 </manifest>

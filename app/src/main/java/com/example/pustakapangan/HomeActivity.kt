@@ -1,5 +1,6 @@
 package com.example.pustakapangan
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -15,6 +17,7 @@ import com.google.android.material.card.MaterialCardView
 
 class HomeActivity : AppCompatActivity() {
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -41,20 +44,41 @@ class HomeActivity : AppCompatActivity() {
             finish()
         }
 
-        // Banner Slider
+        // Menu Majalah
+        val navMajalah = findViewById<RelativeLayout>(R.id.navMajalah)
+        navMajalah.setOnClickListener {
+            startActivity(Intent(this, MajalahActivity::class.java))
+            finish()
+        }
+
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerHero)
         val dot1 = findViewById<MaterialCardView>(R.id.dot1)
         val dot2 = findViewById<MaterialCardView>(R.id.dot2)
         val dot3 = findViewById<MaterialCardView>(R.id.dot3)
         val dots = listOf(dot1, dot2, dot3)
 
-        val dummyImages = listOf(
-            R.drawable.img_vol_04, // Slide 1
-            R.drawable.img_vol_05, // Slide 2
-            R.drawable.img_vol_06  // Slide 3
+        val bannerData = listOf(
+            BannerItem(
+                R.drawable.img_2026_vol_07,
+                "Akses Semua Majalah Digital",
+                "Mulai dari Rp 15.000 / Edisi",
+                "Beli Sekarang"
+            ),
+            BannerItem(
+                R.drawable.img_2026_vol_06,
+                "Edisi Khusus Industri Susu",
+                "Baca ulasan lengkapnya di sini",
+                "Beli - Rp 20.000"
+            ),
+            BannerItem(
+                R.drawable.img_2026_vol_05,
+                "Inovasi Kemasan Ramah Lingkungan",
+                "Tantangan Industri Pangan Indonesia",
+                "Baca Sekarang"
+            )
         )
 
-        viewPager.adapter = HeroAdapter(dummyImages)
+        viewPager.adapter = HeroAdapter(bannerData)
 
         // Banner Digeser
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -76,21 +100,39 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-    class HeroAdapter(private val images: List<Int>) : RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {
+    class HeroAdapter(private val items: List<BannerItem>) : RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {
 
         class HeroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val bgImage: ImageView = view.findViewById(R.id.imgBannerBg)
+            // Kenalkan semua komponen dari XML
+            val bgImage: ImageView = view.findViewById(R.id.imgBannerBgBeranda)
+            val tvTitle: TextView = view.findViewById(R.id.tvBannerTitle)
+            val tvSubtitle: TextView = view.findViewById(R.id.tvBannerSubtitle)
+            val btnBeli: com.google.android.material.button.MaterialButton = view.findViewById(R.id.btnBeliSekarang)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeroViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_hero_banner, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.hero_beranda, parent, false)
             return HeroViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: HeroViewHolder, position: Int) {
-            holder.bgImage.setImageResource(images[position])
+            val currentItem = items[position]
+
+            // Ganti isi komponen sesuai data di urutan saat ini
+            holder.bgImage.setImageResource(currentItem.image)
+            holder.tvTitle.text = currentItem.title
+            holder.tvSubtitle.text = currentItem.subtitle
+            holder.btnBeli.text = currentItem.buttonText
         }
 
-        override fun getItemCount() = images.size
+        override fun getItemCount() = items.size
     }
 }
+
+// hero banner
+data class BannerItem(
+    val image: Int,
+    val title: String,
+    val subtitle: String,
+    val buttonText: String
+)

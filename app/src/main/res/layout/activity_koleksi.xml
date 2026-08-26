@@ -92,7 +92,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/img_vol_04" /> <!-- Ganti dengan cover kulinologi -->
+                            android:src="@drawable/img_2026_vol_04" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Judul & Tombol Lanjut Baca -->
@@ -106,9 +106,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/07 2026"
+                            android:text="FRI VOL XXI/04 2026"
                             android:textColor="#1E1E1E"
-                            android:textSize="14sp"
+                            android:textSize="18sp"
                             android:textStyle="bold"/>
 
                         <LinearLayout
@@ -128,7 +128,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Lanjutkan Membaca"
                                 android:textColor="#00A859"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold"
                                 android:layout_marginStart="4dp"/>
                         </LinearLayout>
@@ -177,13 +177,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/img_vol_06" /> <!-- Cover Susu -->
+                                android:src="@drawable/img_2026_vol_07" />
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/06 2026"
+                            android:text="FRI VOL XXI/07 2026"
                             android:textColor="#1E1E1E"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -254,13 +254,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/img_vol_05" /> <!-- Cover Packaging -->
+                                android:src="@drawable/img_2026_vol_06" /> >
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/05 2026"
+                            android:text="FRI VOL XXI/06 2026"
                             android:textColor="#1E1E1E"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -329,13 +329,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/img_vol_04" /> <!-- Cover Packaging -->
+                                android:src="@drawable/img_2026_vol_05" />
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/04 2026"
+                            android:text="FRI VOL XXI/05 2026"
                             android:textColor="#1E1E1E"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -385,6 +385,7 @@
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_check_green"/>
                             </com.google.android.material.card.MaterialCardView>
+
                         </LinearLayout>
                     </LinearLayout>
 
@@ -432,13 +433,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/img_vol_06" /> <!-- Cover Susu -->
+                                android:src="@drawable/img_2025_vol_12" />
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/06 2026"
+                            android:text="FRI VOL XX/12 2025"
                             android:textColor="#1E1E1E"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -509,13 +510,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/img_vol_05" /> <!-- Cover Packaging -->
+                                android:src="@drawable/img_2025_vol_11" />
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/05 2026"
+                            android:text="FRI VOL XX/11 2025"
                             android:textColor="#1E1E1E"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -584,13 +585,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/img_vol_04" /> <!-- Cover Packaging -->
+                                android:src="@drawable/img_2025_vol_10" />
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="FRI VOL XXI/04 2026"
+                            android:text="FRI VOL XX/10 2025"
                             android:textColor="#1E1E1E"
                             android:textSize="12sp"
                             android:textStyle="bold"

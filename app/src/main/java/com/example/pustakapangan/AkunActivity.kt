@@ -1,5 +1,6 @@
 package com.example.pustakapangan // JANGAN DIHAPUS: Sesuaikan dengan namamu
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RelativeLayout
@@ -9,6 +10,7 @@ import com.google.android.material.card.MaterialCardView
 
 class AkunActivity : AppCompatActivity() {
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_akun)
@@ -64,6 +66,13 @@ class AkunActivity : AppCompatActivity() {
         navKoleksi.setOnClickListener {
             val intent = Intent(this, KoleksiActivity::class.java)
             startActivity(intent)
+            finish()
+        }
+
+        // Menu Majalah
+        val navMajalah = findViewById<RelativeLayout>(R.id.navMajalah)
+        navMajalah.setOnClickListener {
+            startActivity(Intent(this, MajalahActivity::class.java))
             finish()
         }
     }
