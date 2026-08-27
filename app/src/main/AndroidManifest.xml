@@ -41,6 +41,12 @@
             android:name=".KoleksiActivity" />
         <activity
             android:name=".MajalahActivity" />
+        <activity
+            android:name=".NotifikasiActivity" />
+        <activity
+            android:name=".KonfirmasiBankActivity" />
+        <activity
+            android:name=".KonfirmasiQrisActivity" />
 
     </application>
 </manifest>

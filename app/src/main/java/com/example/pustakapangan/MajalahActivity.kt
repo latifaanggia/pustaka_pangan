@@ -101,6 +101,13 @@ class MajalahActivity : AppCompatActivity() {
             startActivity(Intent(this, AkunActivity::class.java))
             finish()
         }
+
+        // Tombol Notifikasi
+        val btnNotifikasi = findViewById<ImageView>(R.id.btnNotifikasi)
+        btnNotifikasi.setOnClickListener {
+            val intent = Intent(this, NotifikasiActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     // Adapter Hero

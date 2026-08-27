@@ -3,6 +3,7 @@ package com.example.pustakapangan // JANGAN DIHAPUS: Sesuaikan dengan namamu
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -45,7 +46,8 @@ class AkunActivity : AppCompatActivity() {
 
         val btnTopup = findViewById<MaterialCardView>(R.id.btnTopup)
         btnTopup.setOnClickListener {
-            Toast.makeText(this, "Halaman Top Up belum dibuat", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, TopUpActivity::class.java)
+            startActivity(intent)
         }
 
         val menuLogout = findViewById<MaterialCardView>(R.id.menuLogout)
@@ -74,6 +76,13 @@ class AkunActivity : AppCompatActivity() {
         navMajalah.setOnClickListener {
             startActivity(Intent(this, MajalahActivity::class.java))
             finish()
+        }
+
+        // Tombol Notifikasi
+        val btnNotifikasi = findViewById<ImageView>(R.id.btnNotifikasi)
+        btnNotifikasi.setOnClickListener {
+            val intent = Intent(this, NotifikasiActivity::class.java)
+            startActivity(intent)
         }
     }
 }

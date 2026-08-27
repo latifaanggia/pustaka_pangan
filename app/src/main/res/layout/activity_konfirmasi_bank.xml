@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F6F8"
+    android:fitsSystemWindows="true">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:id="@+id/headerKonfirmasi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_left_arrow"
+            app:tint="#1E1E1E" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Konfirmasi Pembayaran"
+                android:textColor="#1E1E1E"
+                android:textSize="18sp"
+                android:fontFamily="@font/inter_bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bank Transfer"
+                android:textColor="#9CA3AF"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerKonfirmasi">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="24dp">
+
+            <!-- KARTU 1: DETAIL TRANSAKSI -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Detail Transaksi"
+                        android:textColor="#1E1E1E"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Baris Metode -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Metode Pembayaran"
+                            android:textColor="#9CA3AF"
+                            android:textSize="12sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="BCA Transfer"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/inter_bold" />
+                    </RelativeLayout>
+
+                    <!-- Baris Nomor Rekening -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nomor Rekening\nTujuan"
+                            android:textColor="#9CA3AF"
+                            android:textSize="12sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="1234-5678-90 (PT\nMedia Pangan)"
+                            android:textAlignment="viewEnd"
+                            android:textColor="#1E1E1E"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/inter_bold" />
+                    </RelativeLayout>
+
+                    <!-- Dashed Line -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@drawable/bg_dashed_line"
+                        android:layerType="software"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Baris Nominal -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nominal Transfer"
+                            android:textColor="#00A859"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/inter_bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="Rp 20.000"
+                            android:textColor="#00A859"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/inter_bold" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- KARTU INFO (ORANYE) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#F28E35"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="ℹ️ Silakan lakukan transfer sesuai nominal di atas, lalu isi form di bawah ini untuk mempercepat proses verifikasi saldo oleh admin via WhatsApp."
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/inter" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- KARTU 2: FORM WHATSAPP -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kirim Bukti via WhatsApp"
+                        android:textColor="#1E1E1E"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Form Nama -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nama Lengkap"
+                        android:textColor="#1E1E1E"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:cardBackgroundColor="#F9FAFB"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#E5E7EB"
+                        app:strokeWidth="1dp">
+                        <EditText
+                            android:id="@+id/etNamaLengkapBank"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:background="@null"
+                            android:hint="Masukkan nama Anda"
+                            android:paddingHorizontal="16dp"
+                            android:textColor="#1E1E1E"
+                            android:textColorHint="#9CA3AF"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/inter" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Form Email -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textColor="#1E1E1E"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        app:cardBackgroundColor="#F9FAFB"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#E5E7EB"
+                        app:strokeWidth="1dp">
+                        <EditText
+                            android:id="@+id/etEmailBank"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:background="@null"
+                            android:hint="contoh@email.com"
+                            android:inputType="textEmailAddress"
+                            android:paddingHorizontal="16dp"
+                            android:textColor="#1E1E1E"
+                            android:textColorHint="#9CA3AF"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/inter" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Tombol Konfirmasi -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnKonfirmasiWaBank"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="Konfirmasi via WhatsApp"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_bold"
+                        app:backgroundTint="#9CA3AF"
+                        app:cornerRadius="8dp"
+                        android:enabled="false"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F6F8"
+    android:fitsSystemWindows="true">
+
+    <!-- HEADER (Hanya Back Button saja) -->
+    <LinearLayout
+        android:id="@+id/headerSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_left_arrow"
+            app:tint="#1E1E1E" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerSignIn">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp">
+
+            <!-- LOGO DIPINDAHKAN KE SINI & DIPERBESAR -->
+            <ImageView
+                android:layout_width="180dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:src="@drawable/logo_fri" />
+
+            <!-- Teks Sambutan -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/inter_bold"
+                android:text="Selamat Datang Kembali"
+                android:textColor="#1E1E1E"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="@font/inter"
+                android:gravity="center"
+                android:text="Masuk untuk melanjutkan membaca koleksi\nmajalah favorit Anda."
+                android:textColor="#6B7280"
+                android:textSize="14sp" />
+
+            <!-- Form Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Email"
+                android:textColor="#1E1E1E"
+                android:textSize="14sp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+
+                <EditText
+                    android:id="@+id/etEmailSignIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:hint="contoh@email.com"
+                    android:fontFamily="@font/inter"
+                    android:inputType="textEmailAddress"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="#1E1E1E"
+                    android:textColorHint="#9CA3AF"
+                    android:textSize="14sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Form Password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Password"
+                android:textColor="#1E1E1E"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    app:boxBackgroundMode="none"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="#9CA3AF">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPasswordSignIn"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@null"
+                        android:hint="Masukkan password Anda"
+                        android:inputType="textPassword"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="#1E1E1E"
+                        android:textColorHint="#9CA3AF"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Lupa Password -->
+            <TextView
+                android:id="@+id/tvLupaPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="@font/inter_semibold"
+                android:text="Lupa Password?"
+                android:textColor="#D32F2F"
+                android:textSize="12sp" />
+
+            <!-- Tombol Masuk -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMasuk"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="24dp"
+                android:enabled="false"
+                android:fontFamily="@font/inter_bold"
+                android:text="Masuk"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                app:backgroundTint="#9CA3AF"
+                app:cornerRadius="8dp" />
+
+            <!-- Divider: ATAU MASUK DENGAN -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#E5E7EB" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_semibold"
+                    android:paddingHorizontal="12dp"
+                    android:text="ATAU MASUK DENGAN"
+                    android:textColor="#9CA3AF"
+                    android:textSize="12sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#E5E7EB" />
+            </LinearLayout>
+
+            <!-- Tombol Google -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="32dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/ic_logo_google" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="Lanjutkan dengan Google"
+                        android:textColor="#1E1E1E"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Belum punya akun? Daftar -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter"
+                    android:text="Belum punya akun? "
+                    android:textColor="#6B7280"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvDaftar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Daftar di sini"
+                    android:textColor="#D32F2F"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

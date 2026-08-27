@@ -51,6 +51,13 @@ class HomeActivity : AppCompatActivity() {
             finish()
         }
 
+        // Tombol Notifikasi
+        val btnNotifikasi = findViewById<ImageView>(R.id.btnNotifikasi)
+        btnNotifikasi.setOnClickListener {
+            val intent = Intent(this, NotifikasiActivity::class.java)
+            startActivity(intent)
+        }
+
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerHero)
         val dot1 = findViewById<MaterialCardView>(R.id.dot1)
         val dot2 = findViewById<MaterialCardView>(R.id.dot2)

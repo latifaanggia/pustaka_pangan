@@ -2,6 +2,7 @@ package com.example.pustakapangan
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +34,13 @@ class KoleksiActivity : AppCompatActivity() {
         navMajalah.setOnClickListener {
             startActivity(Intent(this, MajalahActivity::class.java))
             finish()
+        }
+
+        // Tombol Notifikasi
+        val btnNotifikasi = findViewById<ImageView>(R.id.btnNotifikasi)
+        btnNotifikasi.setOnClickListener {
+            val intent = Intent(this, NotifikasiActivity::class.java)
+            startActivity(intent)
         }
     }
 }
