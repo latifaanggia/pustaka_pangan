@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/readerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1E1E1E">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:id="@+id/headerReader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="70dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
+        android:paddingVertical="8dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="Kembali"
+            android:padding="8dp"
+            android:src="@drawable/ic_left_arrow"
+            app:tint="#1E1E1E" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="FRI VOL XXI/07 2026"
+                android:textColor="#1E1E1E"
+                android:textSize="17sp" />
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/inter_semibold"
+                android:text="Membaca Offline"
+                android:textColor="#E67E22"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnFullscreen"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="#F3F3F3"
+            android:contentDescription="Fullscreen"
+            android:padding="9dp"
+            android:src="@drawable/ic_fullscreen"
+            app:tint="#1E1E1E" />
+
+        <ImageView
+            android:id="@+id/btnOptions"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="Options"
+            android:padding="8dp"
+            android:src="@drawable/ic_option"
+            app:tint="#1E1E1E" />
+    </LinearLayout>
+
+    <!-- PDF AREA -->
+    <FrameLayout
+        android:id="@+id/pdfContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#1E1E1E"
+        app:layout_constraintTop_toBottomOf="@id/headerReader"
+        app:layout_constraintBottom_toTopOf="@id/bottomControls">
+
+        <ImageView
+            android:id="@+id/imgPage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:contentDescription="Halaman majalah" />
+    </FrameLayout>
+
+    <!-- BOTTOM CONTROLS -->
+    <LinearLayout
+        android:id="@+id/bottomControls"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/btnZoomOut"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="#F3F3F3"
+            android:contentDescription="Zoom out"
+            android:padding="9dp"
+            android:src="@drawable/ic_zoom_out"
+            app:tint="#1E1E1E" />
+
+        <ImageView
+            android:id="@+id/btnPrevious"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="18dp"
+            android:background="#1E1E1E"
+            android:contentDescription="Halaman sebelumnya"
+            android:padding="10dp"
+            android:src="@drawable/ic_left_arrow"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/tvPageNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/inter_semibold"
+            android:text="1 / 112"
+            android:textColor="#1E1E1E"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/btnNext"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="#1E1E1E"
+            android:contentDescription="Halaman berikutnya"
+            android:padding="10dp"
+            android:src="@drawable/ic_right_arrow"
+            app:tint="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/btnZoomIn"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="18dp"
+            android:background="#F3F3F3"
+            android:contentDescription="Zoom in"
+            android:padding="9dp"
+            android:src="@drawable/ic_zoom_in"
+            app:tint="#1E1E1E" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

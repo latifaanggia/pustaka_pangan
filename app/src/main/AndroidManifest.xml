@@ -47,6 +47,8 @@
             android:name=".KonfirmasiBankActivity" />
         <activity
             android:name=".KonfirmasiQrisActivity" />
-
+        <activity
+            android:name=".EReaderActivity"
+            android:exported="false" />
     </application>
 </manifest>
