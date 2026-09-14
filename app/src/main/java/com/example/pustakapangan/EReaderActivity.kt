@@ -101,7 +101,6 @@ class EReaderActivity : AppCompatActivity() {
         btnZoomIn = findViewById(R.id.btnZoomIn)
 
         tvPageNumber = findViewById(R.id.tvPageNumber)
-        // ⬅️ MEMBERI GARIS BAWAH PADA NOMOR HALAMAN
         tvPageNumber.paintFlags = tvPageNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
 
@@ -242,21 +241,19 @@ class EReaderActivity : AppCompatActivity() {
         if (currentPage < 0 || currentPage >= pdfRenderer.pageCount) return
 
         val page = pdfRenderer.openPage(currentPage)
-        val displayMetrics = resources.displayMetrics
-        val density = displayMetrics.density
+        try {
+            val density = resources.displayMetrics.density
+            val renderScale = 1.5f * density
+            val width = (page.width * renderScale).toInt()
+            val height = (page.height * renderScale).toInt()
 
-        val renderScale = 1.5f * density
-        val width = (page.width * renderScale).toInt()
-        val height = (page.height * renderScale).toInt()
-
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        // ⬅️ FIX PDF BACKGROUND: Wajib dicat putih dulu sebelum PDF digambar!
-        bitmap.eraseColor(Color.WHITE)
-
-        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-        imgPage.setImageBitmap(bitmap)
-        page.close()
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            bitmap.eraseColor(Color.WHITE)
+            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+            imgPage.setImageBitmap(bitmap)
+        } finally {
+            page.close() //
+        }
 
         currentScale = 1f
         applyZoom()

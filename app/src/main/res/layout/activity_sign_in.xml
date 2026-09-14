@@ -6,7 +6,7 @@
     android:background="#F4F6F8"
     android:fitsSystemWindows="true">
 
-    <!-- HEADER (Hanya Back Button saja) -->
+    <!-- HEADER -->
     <LinearLayout
         android:id="@+id/headerSignIn"
         android:layout_width="match_parent"
@@ -130,6 +130,7 @@
                     app:hintEnabled="false"
                     app:boxBackgroundMode="none"
                     app:endIconMode="password_toggle"
+                    app:endIconMinSize="24dp"
                     app:endIconTint="#9CA3AF">
 
                     <com.google.android.material.textfield.TextInputEditText

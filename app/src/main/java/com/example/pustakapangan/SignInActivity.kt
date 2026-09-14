@@ -51,22 +51,22 @@ class SignInActivity : AppCompatActivity() {
 
         // Tombol Masuk
         btnMasuk.setOnClickListener {
-            // Nanti di sini ditambahkan logika authentikasi sungguhan (ke server/Firebase)
+            SessionManager.setLoggedIn(this, true)
             Toast.makeText(this, "Berhasil Masuk!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }
 
         val tvDaftar = findViewById<TextView>(R.id.tvDaftar)
-        tvDaftar.setOnClickListener {
-            Toast.makeText(this, "Menuju halaman pendaftaran...", Toast.LENGTH_SHORT).show()
-        }
+        tvDaftar.setOnClickListener { startActivity(Intent(this, RegisterActivity::class.java)) }
 
         // Aksi Google Login
         val btnGoogle = findViewById<MaterialCardView>(R.id.btnGoogle)
         btnGoogle.setOnClickListener {
-            Toast.makeText(this, "Membuka Google Login...", Toast.LENGTH_SHORT).show()
+            SessionManager.setLoggedIn(this, true)
+            Toast.makeText(this, "Berhasil masuk dengan Google!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
         }
     }
 }

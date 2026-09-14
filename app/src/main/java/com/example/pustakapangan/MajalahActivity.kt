@@ -25,14 +25,29 @@ class MajalahActivity : AppCompatActivity() {
         // Chip tahun
         val mainScrollView = findViewById<ScrollView>(R.id.mainScrollView)
         val chip2026 = findViewById<MaterialCardView>(R.id.chip2026)
+        val tvChip2026 = findViewById<TextView>(R.id.tvChip2026)
         val section2026 = findViewById<TextView>(R.id.section2026)
         val chip2025 = findViewById<MaterialCardView>(R.id.chip2025)
+        val tvChip2025 = findViewById<TextView>(R.id.tvChip2025)
         val section2025 = findViewById<TextView>(R.id.section2025)
 
+        fun ubahChipAktif(aktifCard: MaterialCardView, aktifText: TextView, pasifCard: MaterialCardView, pasifText: TextView) {
+            aktifCard.setCardBackgroundColor(Color.parseColor("#D32F2F"))
+            aktifCard.strokeWidth = 0
+            aktifText.setTextColor(Color.parseColor("#FFFFFF"))
+
+            pasifCard.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
+            pasifCard.strokeColor = Color.parseColor("#E5E7EB")
+            pasifCard.strokeWidth = (1 * resources.displayMetrics.density).toInt()
+            pasifText.setTextColor(Color.parseColor("#6B7280"))
+        }
+
         chip2026.setOnClickListener {
+            ubahChipAktif(chip2026, tvChip2026, chip2025, tvChip2025)
             mainScrollView.post { mainScrollView.smoothScrollTo(0, section2026.top) }
         }
         chip2025.setOnClickListener {
+            ubahChipAktif(chip2025, tvChip2025, chip2026, tvChip2026)
             mainScrollView.post { mainScrollView.smoothScrollTo(0, section2025.top - 20) }
         }
 
@@ -92,14 +107,16 @@ class MajalahActivity : AppCompatActivity() {
 
         val navKoleksi = findViewById<RelativeLayout>(R.id.navKoleksi)
         navKoleksi.setOnClickListener {
-            startActivity(Intent(this, KoleksiActivity::class.java))
-            finish()
+            val sudahLogin = SessionManager.isLoggedIn(this)
+            startActivity(Intent(this, if (sudahLogin) KoleksiActivity::class.java else SignInActivity::class.java))
+            if (sudahLogin) finish()
         }
 
         val navAkun = findViewById<RelativeLayout>(R.id.navAkun)
         navAkun.setOnClickListener {
-            startActivity(Intent(this, AkunActivity::class.java))
-            finish()
+            val sudahLogin = SessionManager.isLoggedIn(this)
+            startActivity(Intent(this, if (sudahLogin) AkunActivity::class.java else SignInActivity::class.java))
+            if (sudahLogin) finish()
         }
 
         // Tombol Notifikasi

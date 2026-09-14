@@ -21,8 +21,8 @@ class KonfirmasiBankActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageView>(R.id.btnBack)
         btnBack.setOnClickListener { finish() }
 
-        val etNamaLengkapBank = findViewById<EditText>(R.id.etNamaLengkap)
-        val etEmailBank = findViewById<EditText>(R.id.etEmail)
+        val etNamaLengkapBank = findViewById<EditText>(R.id.etNamaLengkapBank)
+        val etEmailBank = findViewById<EditText>(R.id.etEmailBank)
         val btnKonfirmasiWaBank = findViewById<MaterialButton>(R.id.btnKonfirmasiWaBank)
 
         fun periksaForm() {

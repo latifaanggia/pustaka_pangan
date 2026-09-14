@@ -50,5 +50,11 @@
         <activity
             android:name=".EReaderActivity"
             android:exported="false" />
+        <activity
+            android:name=".SignInActivity" />
+        <activity
+            android:name=".RegisterActivity" />
+        <activity
+            android:name=".TopUpActivity" />
     </application>
 </manifest>

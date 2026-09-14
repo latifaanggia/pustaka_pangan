@@ -5,5 +5,14 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.PustakaPangan" parent="Base.Theme.PustakaPangan" />
+    <style name="Theme.PustakaPangan" parent="Base.Theme.PustakaPangan">
+        <item name="android:windowAnimationStyle">@style/NoWindowAnimation</item>
+    </style>
+
+    <style name="NoWindowAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/anim_none</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_none</item>
+        <item name="android:activityCloseEnterAnimation">@anim/anim_none</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_none</item>
+    </style>
 </resources>

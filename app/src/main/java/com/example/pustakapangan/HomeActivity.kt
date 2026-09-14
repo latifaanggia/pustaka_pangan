@@ -29,19 +29,19 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Menu Akun
+        // Menu Akun (Terproteksi: guest diarahkan ke Sign In dulu)
         val navAkun = findViewById<RelativeLayout>(R.id.navAkun)
         navAkun.setOnClickListener {
-            val intent = Intent(this, AkunActivity::class.java)
-            startActivity(intent)
+            val tujuan = if (SessionManager.isLoggedIn(this)) AkunActivity::class.java else SignInActivity::class.java
+            startActivity(Intent(this, tujuan))
         }
 
-        // Menu Koleksi
+        // Menu Koleksi (Terproteksi: guest diarahkan ke Sign In dulu)
         val navKoleksi = findViewById<RelativeLayout>(R.id.navKoleksi)
         navKoleksi.setOnClickListener {
-            val intent = Intent(this, KoleksiActivity::class.java)
-            startActivity(intent)
-            finish()
+            val tujuan = if (SessionManager.isLoggedIn(this)) KoleksiActivity::class.java else SignInActivity::class.java
+            startActivity(Intent(this, tujuan))
+            if (SessionManager.isLoggedIn(this)) finish()
         }
 
         // Menu Majalah

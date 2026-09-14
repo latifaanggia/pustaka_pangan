@@ -1,4 +1,4 @@
-package com.example.pustakapangan // JANGAN DIHAPUS: Sesuaikan dengan namamu
+package com.example.pustakapangan
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -14,6 +14,12 @@ class AkunActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!SessionManager.isLoggedIn(this)) {
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_akun)
 
         // Menu Ubah Password
@@ -52,7 +58,11 @@ class AkunActivity : AppCompatActivity() {
 
         val menuLogout = findViewById<MaterialCardView>(R.id.menuLogout)
         menuLogout.setOnClickListener {
+            SessionManager.logout(this)
             Toast.makeText(this, "Berhasil Logout", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, SignInActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            })
         }
 
         // Menu Beranda

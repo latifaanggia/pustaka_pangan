@@ -41,12 +41,12 @@ class TopUpActivity : AppCompatActivity() {
 
         btnBca.setOnClickListener {
             ubahMetodeAktif(btnBca, tvBca, btnQris, tvQris)
-            metodeTerpilih = "BCA" // Catat di ingatan kalau user pilih BCA
+            metodeTerpilih = "BCA"
         }
 
         btnQris.setOnClickListener {
             ubahMetodeAktif(btnQris, tvQris, btnBca, tvBca)
-            metodeTerpilih = "QRIS" // Catat di ingatan kalau user pilih QRIS
+            metodeTerpilih = "QRIS"
         }
 
         // Nominal
@@ -65,6 +65,8 @@ class TopUpActivity : AppCompatActivity() {
 
         val daftarBtn = listOf(btnNominal20, btnNominal40, btnNominal100, btnNominal200, btnNominalLainnya)
         val daftarText = listOf(tvNominal20, tvNominal40, tvNominal100, tvNominal200, tvNominalLainnya)
+        val daftarNominalRupiah = listOf("Rp 20.000", "Rp 40.000", "Rp 100.000", "Rp 200.000", "")
+        var nominalTerpilih = daftarNominalRupiah[0]
 
         fun pilihNominal(indexTerpilih: Int) {
             for (i in daftarBtn.indices) {
@@ -84,8 +86,10 @@ class TopUpActivity : AppCompatActivity() {
             } else {
                 layoutInputManual.visibility = View.GONE
             }
+            nominalTerpilih = daftarNominalRupiah[indexTerpilih]
         }
 
+        pilihNominal(0)
         btnNominal20.setOnClickListener { pilihNominal(0) }
         btnNominal40.setOnClickListener { pilihNominal(1) }
         btnNominal100.setOnClickListener { pilihNominal(2) }
@@ -93,17 +97,14 @@ class TopUpActivity : AppCompatActivity() {
         btnNominalLainnya.setOnClickListener { pilihNominal(4) }
 
         // Flow bca dan qris
+        val etInputNominal = findViewById<android.widget.EditText>(R.id.etInputNominal)
         val btnProsesTopUp = findViewById<MaterialButton>(R.id.btnProsesTopUp)
         btnProsesTopUp.setOnClickListener {
 
-            if (metodeTerpilih == "BCA") {
-                val intent = Intent(this, KonfirmasiBankActivity::class.java)
-                startActivity(intent)
+            val nominalFinal = if (nominalTerpilih.isEmpty()) "Rp ${etInputNominal.text}" else nominalTerpilih
 
-            } else if (metodeTerpilih == "QRIS") {
-                val intent = Intent(this, KonfirmasiQrisActivity::class.java)
-                startActivity(intent)
-            }
+            val tujuan = if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java else KonfirmasiQrisActivity::class.java
+            startActivity(Intent(this, tujuan).apply { putExtra("NOMINAL_TOPUP", nominalFinal) })
 
         }
     }

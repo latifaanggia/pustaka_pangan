@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@drawable/bg_dialog_white_rounded"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="32dp">
+
+    <!-- Ikon Centang Bulat Hijau -->
+    <FrameLayout
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/bg_circle_light_green">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_check_green"
+            app:tint="#00A859" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Pembelian Berhasil!"
+        android:textSize="18sp"
+        android:textColor="#1E1E1E"
+        android:fontFamily="@font/inter_bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="Hore! Majalah telah berhasil ditambahkan ke rak koleksi Anda."
+        android:textSize="14sp"
+        android:textColor="#6B7280"
+        android:fontFamily="@font/inter" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMulaiMembaca"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="24dp"
+        android:text="Mulai Membaca"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:fontFamily="@font/inter_semibold"
+        android:textAllCaps="false"
+        app:backgroundTint="#00AA5B"
+        app:cornerRadius="8dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTutupSukses"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="12dp"
+        android:text="Tutup"
+        android:textColor="#6B7280"
+        android:textSize="14sp"
+        android:fontFamily="@font/inter_semibold"
+        android:textAllCaps="false"
+        app:strokeColor="#D1D5DB"
+        app:cornerRadius="8dp" />
+
+</LinearLayout>

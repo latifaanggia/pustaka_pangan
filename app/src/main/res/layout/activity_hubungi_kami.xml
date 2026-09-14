@@ -180,6 +180,7 @@
                             android:hint="Masukkan nama Anda"
                             android:inputType="textPersonName"
                             android:paddingHorizontal="12dp"
+                            android:textColor="#1E1E1E"
                             android:textColorHint="#9CA3AF"
                             android:textSize="14sp" />
                     </com.google.android.material.card.MaterialCardView>
@@ -211,6 +212,7 @@
                             android:hint="contoh@email.com"
                             android:inputType="textEmailAddress"
                             android:paddingHorizontal="12dp"
+                            android:textColor="#1E1E1E"
                             android:textColorHint="#9CA3AF"
                             android:textSize="14sp" />
                     </com.google.android.material.card.MaterialCardView>
@@ -242,6 +244,7 @@
                             android:hint="08XXXXX"
                             android:inputType="phone"
                             android:paddingHorizontal="12dp"
+                            android:textColor="#1E1E1E"
                             android:textColorHint="#9CA3AF"
                             android:textSize="14sp" />
                     </com.google.android.material.card.MaterialCardView>
@@ -275,6 +278,7 @@
                             android:inputType="textMultiLine"
                             android:minLines="4"
                             android:padding="12dp"
+                            android:textColor="#1E1E1E"
                             android:textColorHint="#9CA3AF"
                             android:textSize="14sp" />
                     </com.google.android.material.card.MaterialCardView>
