@@ -100,12 +100,18 @@ class TopUpActivity : AppCompatActivity() {
         val etInputNominal = findViewById<android.widget.EditText>(R.id.etInputNominal)
         val btnProsesTopUp = findViewById<MaterialButton>(R.id.btnProsesTopUp)
         btnProsesTopUp.setOnClickListener {
+            val nominalInt = if (nominalTerpilih.isEmpty()) {
+                etInputNominal.text.toString().filter { it.isDigit() }.toIntOrNull() ?: 0
+            } else {
+                nominalTerpilih.filter { it.isDigit() }.toIntOrNull() ?: 0
+            }
+            val namaMetode = if (metodeTerpilih == "BCA") "BCA Transfer" else "QRIS"
 
-            val nominalFinal = if (nominalTerpilih.isEmpty()) "Rp ${etInputNominal.text}" else nominalTerpilih
+            val customerId = CustomerRepository.getUserAktif()?.id ?: 1
+            TopUpRepository.tambahRiwayat(customerId, nominalInt, namaMetode)
 
             val tujuan = if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java else KonfirmasiQrisActivity::class.java
-            startActivity(Intent(this, tujuan).apply { putExtra("NOMINAL_TOPUP", nominalFinal) })
-
+            startActivity(Intent(this, tujuan).apply { putExtra("NOMINAL_TOPUP", "Rp${"%,d".format(nominalInt).replace(',', '.')}") })
         }
     }
 }
