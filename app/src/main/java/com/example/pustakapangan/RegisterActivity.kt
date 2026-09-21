@@ -38,6 +38,7 @@ class RegisterActivity : AppCompatActivity() {
 
         val daftarNegara = listOf("Indonesia", "Malaysia", "Singapura", "Brunei Darussalam", "Timor Leste")
         dropdownNegara.setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_1, daftarNegara))
+        dropdownNegara.setOnClickListener { dropdownNegara.showDropDown() }
 
         fun periksaForm() {
             val semuaTerisi = listOf(

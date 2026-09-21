@@ -332,10 +332,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:hintEnabled="false"
-                            app:boxBackgroundMode="none"
-                            app:endIconMode="dropdown_menu">
+                            app:boxBackgroundMode="none">
 
-                            <!-- inputType="none" mencegah keyboard muncul dan menjadikannya dropdown -->
                             <AutoCompleteTextView
                                 android:id="@+id/dropdownNegara"
                                 android:layout_width="match_parent"
@@ -344,6 +342,8 @@
                                 android:inputType="none"
                                 android:hint="-- Pilih --"
                                 android:paddingHorizontal="16dp"
+                                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                                android:drawablePadding="8dp"
                                 android:textColor="#1E1E1E"
                                 android:textColorHint="#9CA3AF"
                                 android:textSize="14sp" />
