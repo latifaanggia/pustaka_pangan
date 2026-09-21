@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
@@ -50,6 +51,7 @@ class KonfirmasiQrisActivity : AppCompatActivity() {
 
         // Ke wa
         val nominalDariTopUp = intent.getStringExtra("NOMINAL_TOPUP") ?: "Rp 0"
+        findViewById<TextView>(R.id.tvNominalKonfirmasi).text = nominalDariTopUp
 
         btnKonfirmasiWaQris.setOnClickListener {
             val nama = etNamaLengkapQris.text.toString().trim()

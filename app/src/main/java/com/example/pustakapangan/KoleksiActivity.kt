@@ -3,6 +3,7 @@ package com.example.pustakapangan
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -66,6 +67,13 @@ class KoleksiActivity : AppCompatActivity() {
         // MAJALAH VOL 05 (Kondisi Awal: Offline / Hijau)
         findViewById<MaterialCardView>(R.id.btnBacaVol05).setOnClickListener {
             bukaEReader(majalahVol05.judul, majalahVol05.namaFilePdf, true)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (SessionManager.isLoggedIn(this)) {
+            findViewById<View>(R.id.dotNotifBell).visibility = if (NotifikasiState.adaNotifBelumDibaca(this)) View.VISIBLE else View.GONE
         }
     }
 

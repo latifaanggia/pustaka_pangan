@@ -71,8 +71,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         // Tombol Notifikasi
-        val btnNotifikasi = findViewById<ImageView>(R.id.btnNotifikasi)
-        btnNotifikasi.setOnClickListener {
+        findViewById<ImageView>(R.id.btnNotifikasi).setOnClickListener {
             val intent = Intent(this, NotifikasiActivity::class.java)
             startActivity(intent)
         }
@@ -124,6 +123,11 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        findViewById<View>(R.id.dotNotifBell).visibility = if (NotifikasiState.adaNotifBelumDibaca(this)) View.VISIBLE else View.GONE
     }
 
     class HeroAdapter(private val items: List<BannerItem>) : RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {

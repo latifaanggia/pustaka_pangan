@@ -122,6 +122,11 @@ class MajalahActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        findViewById<View>(R.id.dotNotifBell).visibility = if (NotifikasiState.adaNotifBelumDibaca(this)) View.VISIBLE else View.GONE
+    }
+
     private fun bukaDetailMajalah(majalahId: Int) {
         startActivity(Intent(this, DetailMajalahActivity::class.java).apply {
             putExtra("MAJALAH_ID", majalahId)

@@ -48,11 +48,23 @@
                         android:src="@drawable/ic_search"
                         android:layout_marginEnd="12dp"/>
 
-                    <ImageView
-                        android:id="@+id/btnNotifikasi"
+                    <FrameLayout
                         android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_bell"/>
+                        android:layout_height="32dp">
+                        <ImageView
+                            android:id="@+id/btnNotifikasi"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_bell_default"/>
+                        <View
+                            android:id="@+id/dotNotifBell"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:layout_gravity="top|end"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="3dp"
+                            android:background="@drawable/bg_badge_dot" />
+                    </FrameLayout>
                 </LinearLayout>
             </RelativeLayout>
 

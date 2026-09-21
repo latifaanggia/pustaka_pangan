@@ -65,7 +65,7 @@ class RegisterActivity : AppCompatActivity() {
 
         // Tombol Daftar Akun
         btnDaftarAkun.setOnClickListener {
-            CustomerRepository.daftarkanCustomerBaru(
+            CustomerRepository.daftarkanCustomerBaru(this,
                 Customer(
                     id = 1,
                     namaDepan = etNamaDepan.text.toString(),
@@ -81,7 +81,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         findViewById<MaterialCardView>(R.id.btnGoogleReg).setOnClickListener {
-            CustomerRepository.daftarkanCustomerBaru(
+            CustomerRepository.daftarkanCustomerBaru(this,
                 Customer(id = 1, namaDepan = "Pengguna", namaBelakang = "Google", email = "user@gmail.com", saldo = 0, provider = "google")
             )
             SessionManager.setLoggedIn(this, true)

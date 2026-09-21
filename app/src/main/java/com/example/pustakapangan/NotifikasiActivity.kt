@@ -21,12 +21,22 @@ class NotifikasiActivity : AppCompatActivity() {
         val cardNotifUnread = findViewById<MaterialCardView>(R.id.cardNotifUnread)
         val dotUnread = findViewById<View>(R.id.dotUnread)
         val iconUnread = findViewById<MaterialCardView>(R.id.iconUnread)
-        cardNotifUnread.setOnClickListener {
-            cardNotifUnread.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
-            cardNotifUnread.strokeWidth = 0
-            cardNotifUnread.cardElevation = 2 * resources.displayMetrics.density
-            iconUnread.setCardBackgroundColor(Color.parseColor("#F4F6F8"))
-            dotUnread.visibility = View.GONE
+
+        if (!NotifikasiState.adaNotifBelumDibaca(this)) {
+            tandaiKartuSudahDibaca(cardNotifUnread, iconUnread, dotUnread)
         }
+
+        cardNotifUnread.setOnClickListener {
+            tandaiKartuSudahDibaca(cardNotifUnread, iconUnread, dotUnread)
+            NotifikasiState.tandaiSudahDibaca(this)
+        }
+    }
+
+    private fun tandaiKartuSudahDibaca(card: MaterialCardView, icon: MaterialCardView, dot: View) {
+        card.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
+        card.strokeWidth = 0
+        card.cardElevation = 2 * resources.displayMetrics.density
+        icon.setCardBackgroundColor(Color.parseColor("#F4F6F8"))
+        dot.visibility = View.GONE
     }
 }

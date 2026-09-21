@@ -91,9 +91,7 @@ class DetailMajalahActivity : AppCompatActivity() {
         }
     }
 
-    // =========================
     // BOTTOM SHEET: KONFIRMASI PEMBELIAN
-    // =========================
     private fun tampilkanKonfirmasiPembelian() {
         val sheet = BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.dialog_konfirmasi_pembelian, null)
@@ -103,6 +101,11 @@ class DetailMajalahActivity : AppCompatActivity() {
         view.findViewById<TextView>(R.id.tvJudulSheet).text = majalah.judul
         view.findViewById<TextView>(R.id.tvHargaSheet).text = "Rp${formatRupiah(majalah.harga)}"
         view.findViewById<TextView>(R.id.tvHargaPotong).text = "- Rp${formatRupiah(majalah.harga)}"
+
+        val saldoUser = CustomerRepository.getUserAktif(this)?.saldo ?: 0
+        val sisaSaldo = saldoUser - majalah.harga
+        view.findViewById<TextView>(R.id.tvSaldoSaatIni).text = "Rp${formatRupiah(saldoUser)}"
+        view.findViewById<TextView>(R.id.tvSisaSaldo).text = "Rp${formatRupiah(sisaSaldo)}"
 
         view.findViewById<ImageView>(R.id.btnCloseSheet).setOnClickListener { sheet.dismiss() }
 
@@ -114,9 +117,7 @@ class DetailMajalahActivity : AppCompatActivity() {
         sheet.show()
     }
 
-    // =========================
     // DIALOG: PEMBELIAN BERHASIL
-    // =========================
     private fun tampilkanPembelianBerhasil() {
         val dialog = Dialog(this)
         val view = layoutInflater.inflate(R.layout.dialog_pembelian_berhasil, null)

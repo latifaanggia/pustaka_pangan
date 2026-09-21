@@ -25,7 +25,7 @@ class RiwayatTopUpActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageView>(R.id.btnBack)
         btnBack.setOnClickListener { finish() }
 
-        val customerId = CustomerRepository.getUserAktif()?.id ?: 1
+        val customerId = CustomerRepository.getUserAktif(this)?.id ?: 1
         findViewById<RecyclerView>(R.id.recyclerViewRiwayat).apply {
             layoutManager = LinearLayoutManager(this@RiwayatTopUpActivity)
             adapter = RiwayatTopUpAdapter(TopUpRepository.getRiwayatByCustomer(customerId)) { pesanWa ->

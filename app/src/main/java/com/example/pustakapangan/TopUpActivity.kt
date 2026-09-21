@@ -18,6 +18,9 @@ class TopUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_top_up)
 
+        val saldoUser = CustomerRepository.getUserAktif(this)?.saldo ?: 0
+        findViewById<TextView>(R.id.tvSaldoTopUp).text = "Rp${"%,d".format(saldoUser).replace(',', '.')}"
+
         // Tombol Kembali
         val btnBack = findViewById<ImageView>(R.id.btnBack)
         btnBack.setOnClickListener { finish() }
@@ -100,6 +103,7 @@ class TopUpActivity : AppCompatActivity() {
         val etInputNominal = findViewById<android.widget.EditText>(R.id.etInputNominal)
         val btnProsesTopUp = findViewById<MaterialButton>(R.id.btnProsesTopUp)
         btnProsesTopUp.setOnClickListener {
+
             val nominalInt = if (nominalTerpilih.isEmpty()) {
                 etInputNominal.text.toString().filter { it.isDigit() }.toIntOrNull() ?: 0
             } else {
@@ -107,7 +111,7 @@ class TopUpActivity : AppCompatActivity() {
             }
             val namaMetode = if (metodeTerpilih == "BCA") "BCA Transfer" else "QRIS"
 
-            val customerId = CustomerRepository.getUserAktif()?.id ?: 1
+            val customerId = CustomerRepository.getUserAktif(this)?.id ?: 1
             TopUpRepository.tambahRiwayat(customerId, nominalInt, namaMetode)
 
             val tujuan = if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java else KonfirmasiQrisActivity::class.java

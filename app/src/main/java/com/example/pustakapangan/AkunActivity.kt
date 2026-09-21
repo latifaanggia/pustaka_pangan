@@ -1,4 +1,4 @@
-package com.example.pustakapangan // JANGAN DIHAPUS: Sesuaikan dengan namamu
+package com.example.pustakapangan
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -24,7 +24,7 @@ class AkunActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_akun)
 
-        val user = CustomerRepository.getUserAktif()
+        val user = CustomerRepository.getUserAktif(this)
         if (user != null) {
             findViewById<TextView>(R.id.tvNamaUser).text = "${user.namaDepan} ${user.namaBelakang}".trim()
             findViewById<TextView>(R.id.tvInisialAvatar).text = user.inisial()
@@ -69,7 +69,7 @@ class AkunActivity : AppCompatActivity() {
         val menuLogout = findViewById<MaterialCardView>(R.id.menuLogout)
         menuLogout.setOnClickListener {
             SessionManager.logout(this)
-            CustomerRepository.logout() // ⬅️ Reset juga data Customer aktif, biar gak nyisa punya user sebelumnya
+            CustomerRepository.logout(this)
             Toast.makeText(this, "Berhasil Logout", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, SignInActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -104,6 +104,14 @@ class AkunActivity : AppCompatActivity() {
         btnNotifikasi.setOnClickListener {
             val intent = Intent(this, NotifikasiActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (SessionManager.isLoggedIn(this)) {
+            findViewById<android.view.View>(R.id.dotNotifBell).visibility =
+                if (NotifikasiState.adaNotifBelumDibaca(this)) android.view.View.VISIBLE else android.view.View.GONE
         }
     }
 }
