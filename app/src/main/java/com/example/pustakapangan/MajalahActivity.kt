@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
@@ -58,28 +59,13 @@ class MajalahActivity : AppCompatActivity() {
         val dot3 = findViewById<MaterialCardView>(R.id.dot3)
         val dots = listOf(dot1, dot2, dot3)
 
-        val bannerMajalahData = listOf(
-            BannerMajalahItem(
-                R.drawable.img_2026_vol_07,
-                "TERBARU",
-                "FRI VOL XXI/07 2026",
-                "Beli - Rp 20.000"
-            ),
-            BannerMajalahItem(
-                R.drawable.img_2025_vol_11,
-                "TERPOPULER",
-                "FRI VOL XX/11 2025",
-                "Beli - Rp 20.000"
-            ),
-            BannerMajalahItem(
-                R.drawable.img_2026_vol_06,
-                "PILIHAN",
-                "FRI VOL XXI/06 2026",
-                "Beli - Rp 20.000"
-            )
-        )
+        val majalahTerbaru = MajalahRepository.getTerbaru(3)
+        val bannerMajalahData = majalahTerbaru.mapIndexed { index, m ->
+            val tag = when (index) { 0 -> "TERBARU"; 1 -> "TERPOPULER"; else -> "PILIHAN" }
+            BannerMajalahItem(m.id, m.urlCover, tag, m.judul, "Beli - Rp${"%,d".format(m.harga).replace(',', '.')}")
+        }
 
-        viewPager.adapter = MajalahHeroAdapter(bannerMajalahData)
+        viewPager.adapter = MajalahHeroAdapter(bannerMajalahData) { majalahId -> bukaDetailMajalah(majalahId) }
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -97,6 +83,15 @@ class MajalahActivity : AppCompatActivity() {
                 }
             }
         })
+
+        findViewById<RecyclerView>(R.id.recyclerView2026).apply {
+            layoutManager = LinearLayoutManager(this@MajalahActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = MajalahGridAdapter(MajalahRepository.getByTahun(2026)) { majalahId -> bukaDetailMajalah(majalahId) }
+        }
+        findViewById<RecyclerView>(R.id.recyclerView2025).apply {
+            layoutManager = LinearLayoutManager(this@MajalahActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = MajalahGridAdapter(MajalahRepository.getByTahun(2025)) { majalahId -> bukaDetailMajalah(majalahId) }
+        }
 
         // Navbar
         val navBeranda = findViewById<RelativeLayout>(R.id.navBeranda)
@@ -127,8 +122,17 @@ class MajalahActivity : AppCompatActivity() {
         }
     }
 
+    private fun bukaDetailMajalah(majalahId: Int) {
+        startActivity(Intent(this, DetailMajalahActivity::class.java).apply {
+            putExtra("MAJALAH_ID", majalahId)
+        })
+    }
+
     // Adapter Hero
-    class MajalahHeroAdapter(private val items: List<BannerMajalahItem>) : RecyclerView.Adapter<MajalahHeroAdapter.HeroViewHolder>() {
+    class MajalahHeroAdapter(
+        private val items: List<BannerMajalahItem>,
+        private val onBeliClick: (Int) -> Unit
+    ) : RecyclerView.Adapter<MajalahHeroAdapter.HeroViewHolder>() {
 
         class HeroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val bgImage: ImageView = view.findViewById(R.id.imgBannerBgMajalah)
@@ -148,6 +152,32 @@ class MajalahActivity : AppCompatActivity() {
             holder.tvTag.text = currentItem.tagText
             holder.tvTitle.text = currentItem.title
             holder.btnBeli.text = currentItem.buttonText
+            holder.btnBeli.setOnClickListener { onBeliClick(currentItem.majalahId) }
+        }
+
+        override fun getItemCount() = items.size
+    }
+
+    class MajalahGridAdapter(
+        private val items: List<Majalah>,
+        private val onItemClick: (Int) -> Unit
+    ) : RecyclerView.Adapter<MajalahGridAdapter.GridViewHolder>() {
+
+        class GridViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val imgCover: ImageView = view.findViewById(R.id.imgCoverItem)
+            val tvHarga: TextView = view.findViewById(R.id.tvHargaItem)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_majalah_card, parent, false)
+            return GridViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: GridViewHolder, position: Int) {
+            val majalah = items[position]
+            holder.imgCover.setImageResource(majalah.urlCover)
+            holder.tvHarga.text = "Rp${"%,d".format(majalah.harga).replace(',', '.')}"
+            holder.itemView.setOnClickListener { onItemClick(majalah.id) }
         }
 
         override fun getItemCount() = items.size
@@ -156,6 +186,7 @@ class MajalahActivity : AppCompatActivity() {
 
 // hero majalah
 data class BannerMajalahItem(
+    val majalahId: Int,
     val image: Int,
     val tagText: String,
     val title: String,

@@ -14,24 +14,41 @@ import com.google.android.material.card.MaterialCardView
 
 class DetailMajalahActivity : AppCompatActivity() {
     private var halamanSaatIni = 1
-    private val totalHalaman = 6
-
-    private val daftarGambar = listOf(
-        R.drawable.img_2026_vol_07,       // Halaman 1 (Cover)
-        R.drawable.img_2026_vol_07_hal2,  // Halaman 2
-        R.drawable.img_2026_vol_07_hal3,  // Halaman 3
-        R.drawable.img_2026_vol_07_hal4,  // Halaman 4
-        R.drawable.img_2026_vol_07_hal5,  // Halaman 5
-        R.drawable.img_2026_vol_07_hal6   // Halaman 6
-    )
+    private lateinit var majalah: Majalah
+    private lateinit var daftarGambar: List<Int>
+    private val totalHalaman get() = daftarGambar.size
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_majalah)
 
+        val majalahId = intent.getIntExtra("MAJALAH_ID", 7)
+        majalah = MajalahRepository.getById(majalahId) ?: MajalahRepository.getSemuaMajalah().first()
+
+        daftarGambar = if (majalah.id == 7) {
+            listOf(
+                R.drawable.img_2026_vol_07, R.drawable.img_2026_vol_07_hal2, R.drawable.img_2026_vol_07_hal3,
+                R.drawable.img_2026_vol_07_hal4, R.drawable.img_2026_vol_07_hal5, R.drawable.img_2026_vol_07_hal6
+            )
+        } else {
+            listOf(majalah.urlCover)
+        }
+
+        tampilkanDataMajalah()
         setupPratinjauEditorial()
         setupTombolAksi()
     }
+
+    private fun tampilkanDataMajalah() {
+        findViewById<ImageView>(R.id.imgCover).setImageResource(majalah.urlCover)
+        findViewById<TextView>(R.id.tvJudulMajalah).text = majalah.judul
+        findViewById<TextView>(R.id.tvHarga).text = "Rp ${formatRupiah(majalah.harga)}"
+        findViewById<ImageView>(R.id.imgPratinjau).setImageResource(daftarGambar[0])
+        findViewById<TextView>(R.id.tvHalamanPratinjau).text = "1 / $totalHalaman"
+    }
+
+    private fun formatRupiah(angka: Int): String =
+        java.text.NumberFormat.getNumberInstance(java.util.Locale("in", "ID")).format(angka)
 
     private fun setupPratinjauEditorial() {
         val imgPratinjau = findViewById<ImageView>(R.id.imgPratinjau)
@@ -42,7 +59,6 @@ class DetailMajalahActivity : AppCompatActivity() {
         btnPanahKanan.setOnClickListener {
             if (halamanSaatIni < totalHalaman) {
                 halamanSaatIni++
-
                 tvHalamanPratinjau.text = "$halamanSaatIni / $totalHalaman"
                 imgPratinjau.setImageResource(daftarGambar[halamanSaatIni - 1])
             }
@@ -51,7 +67,6 @@ class DetailMajalahActivity : AppCompatActivity() {
         btnPanahKiri.setOnClickListener {
             if (halamanSaatIni > 1) {
                 halamanSaatIni--
-
                 tvHalamanPratinjau.text = "$halamanSaatIni / $totalHalaman"
                 imgPratinjau.setImageResource(daftarGambar[halamanSaatIni - 1])
             }
@@ -67,8 +82,13 @@ class DetailMajalahActivity : AppCompatActivity() {
             finish()
         }
 
-        // Tombol Beli
-        btnAction.setOnClickListener { tampilkanKonfirmasiPembelian() }
+        btnAction.setOnClickListener {
+            if (SessionManager.isLoggedIn(this)) {
+                tampilkanKonfirmasiPembelian()
+            } else {
+                startActivity(Intent(this, SignInActivity::class.java))
+            }
+        }
     }
 
     // =========================
@@ -78,6 +98,11 @@ class DetailMajalahActivity : AppCompatActivity() {
         val sheet = BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.dialog_konfirmasi_pembelian, null)
         sheet.setContentView(view)
+
+        view.findViewById<ImageView>(R.id.imgCoverSheet).setImageResource(majalah.urlCover)
+        view.findViewById<TextView>(R.id.tvJudulSheet).text = majalah.judul
+        view.findViewById<TextView>(R.id.tvHargaSheet).text = "Rp${formatRupiah(majalah.harga)}"
+        view.findViewById<TextView>(R.id.tvHargaPotong).text = "- Rp${formatRupiah(majalah.harga)}"
 
         view.findViewById<ImageView>(R.id.btnCloseSheet).setOnClickListener { sheet.dismiss() }
 
@@ -89,7 +114,9 @@ class DetailMajalahActivity : AppCompatActivity() {
         sheet.show()
     }
 
+    // =========================
     // DIALOG: PEMBELIAN BERHASIL
+    // =========================
     private fun tampilkanPembelianBerhasil() {
         val dialog = Dialog(this)
         val view = layoutInflater.inflate(R.layout.dialog_pembelian_berhasil, null)
@@ -103,7 +130,7 @@ class DetailMajalahActivity : AppCompatActivity() {
         }
         view.findViewById<MaterialButton>(R.id.btnTutupSukses).setOnClickListener {
             dialog.dismiss()
-            aturStatusPembelian(true) //
+            aturStatusPembelian(true)
         }
 
         dialog.show()
@@ -111,8 +138,8 @@ class DetailMajalahActivity : AppCompatActivity() {
 
     private fun bukaEReader() {
         startActivity(Intent(this, EReaderActivity::class.java).apply {
-            putExtra("JUDUL_MAJALAH", "FRI VOL XXI/07 2026")
-            putExtra("NAMA_FILE_PDF", "2026_vol_07.pdf")
+            putExtra("JUDUL_MAJALAH", majalah.judul)
+            putExtra("NAMA_FILE_PDF", majalah.namaFilePdf)
         })
     }
 
@@ -122,8 +149,8 @@ class DetailMajalahActivity : AppCompatActivity() {
         if (sudahDibeli) {
             // Ubah jadi State: SUDAH BAYAR
             btnAction.text = "Baca Sekarang"
-            btnAction.backgroundTintList = getColorStateList(android.R.color.holo_orange_dark) // Atau pakai Color.parseColor("#FF8C00")
-            btnAction.setOnClickListener { bukaEReader() } // ⬅️ FIX: dulu cuma Toast dummy, sekarang beneran buka E-Reader
+            btnAction.backgroundTintList = getColorStateList(android.R.color.holo_orange_dark)
+            btnAction.setOnClickListener { bukaEReader() }
         } else {
             // State default: BELUM BAYAR (Tetap Hijau)
             btnAction.text = "Beli Sekarang"

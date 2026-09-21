@@ -51,6 +51,10 @@ class SignInActivity : AppCompatActivity() {
 
         // Tombol Masuk
         btnMasuk.setOnClickListener {
+            val email = etEmailSignIn.text.toString().trim()
+            val namaDariEmail = email.substringBefore("@").replaceFirstChar { it.uppercase() }
+
+            CustomerRepository.signIn(email, Customer(id = 1, namaDepan = namaDariEmail, namaBelakang = "", email = email, saldo = 1000000))
             SessionManager.setLoggedIn(this, true)
             Toast.makeText(this, "Berhasil Masuk!", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, HomeActivity::class.java))
@@ -60,9 +64,9 @@ class SignInActivity : AppCompatActivity() {
         val tvDaftar = findViewById<TextView>(R.id.tvDaftar)
         tvDaftar.setOnClickListener { startActivity(Intent(this, RegisterActivity::class.java)) }
 
-        // Aksi Google Login
         val btnGoogle = findViewById<MaterialCardView>(R.id.btnGoogle)
         btnGoogle.setOnClickListener {
+            CustomerRepository.signIn("user@gmail.com", Customer(id = 1, namaDepan = "Pengguna", namaBelakang = "Google", email = "user@gmail.com", saldo = 1000000, provider = "google"))
             SessionManager.setLoggedIn(this, true)
             Toast.makeText(this, "Berhasil masuk dengan Google!", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, HomeActivity::class.java))

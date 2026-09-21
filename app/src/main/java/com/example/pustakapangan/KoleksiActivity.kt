@@ -18,8 +18,6 @@ class KoleksiActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ⬅️ Guard halaman: jangan andalkan proteksi di titik klik nav saja,
-        // karena Activity ini bisa saja diakses langsung dari jalur lain (mis. task resume)
         if (!SessionManager.isLoggedIn(this)) {
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
@@ -27,6 +25,9 @@ class KoleksiActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_koleksi)
+
+        val majalahVol06 = MajalahRepository.getById(6)!!
+        val majalahVol05 = MajalahRepository.getById(5)!!
 
         // NAVIGASI
         findViewById<RelativeLayout>(R.id.navBeranda).setOnClickListener {
@@ -42,7 +43,7 @@ class KoleksiActivity : AppCompatActivity() {
             startActivity(Intent(this, NotifikasiActivity::class.java))
         }
 
-        // MAJALAH VOL 06
+        // MAJALAH VOL 06 (status dibaca dari SharedPreferences saat halaman dibuka)
         val btnBacaVol06 = findViewById<MaterialCardView>(R.id.btnBacaVol06)
         val btnDownloadVol06 = findViewById<MaterialCardView>(R.id.btnDownloadVol06)
         val tvBacaVol06 = findViewById<TextView>(R.id.tvBacaVol06)
@@ -53,18 +54,18 @@ class KoleksiActivity : AppCompatActivity() {
         }
 
         btnBacaVol06.setOnClickListener {
-            bukaEReader("FRI VOL XXI/06 2026", "2026_vol_06.pdf", prefs.getBoolean(KEY_OFFLINE_VOL06, false))
+            bukaEReader(majalahVol06.judul, majalahVol06.namaFilePdf, prefs.getBoolean(KEY_OFFLINE_VOL06, false))
         }
 
         btnDownloadVol06.setOnClickListener {
-            prefs.edit().putBoolean(KEY_OFFLINE_VOL06, true).apply() // ⬅️ FIX: simpan status permanen
+            prefs.edit().putBoolean(KEY_OFFLINE_VOL06, true).apply()
             tampilkanVol06SudahDiunduh(btnBacaVol06, tvBacaVol06, iconDownloadVol06)
             Toast.makeText(this, "Majalah berhasil diunduh!", Toast.LENGTH_SHORT).show()
         }
 
-        // MAJALAH VOL 05
+        // MAJALAH VOL 05 (Kondisi Awal: Offline / Hijau)
         findViewById<MaterialCardView>(R.id.btnBacaVol05).setOnClickListener {
-            bukaEReader("FRI VOL XXI/05 2026", "2026_vol_05.pdf", true)
+            bukaEReader(majalahVol05.judul, majalahVol05.namaFilePdf, true)
         }
     }
 

@@ -22,21 +22,40 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        val duaTerbaru = MajalahRepository.getTerbaru(2)
+        val majalahTerbaru1 = duaTerbaru[0]
+        val majalahTerbaru2 = duaTerbaru[1]
+
+        findViewById<ImageView>(R.id.imgTerbaru1).setImageResource(majalahTerbaru1.urlCover)
+        findViewById<TextView>(R.id.tvJudulTerbaru1).text = majalahTerbaru1.judul
+        findViewById<TextView>(R.id.tvHargaTerbaru1).text = "Rp${"%,d".format(majalahTerbaru1.harga).replace(',', '.')}"
+
+        findViewById<ImageView>(R.id.imgTerbaru2).setImageResource(majalahTerbaru2.urlCover)
+        findViewById<TextView>(R.id.tvJudulTerbaru2).text = majalahTerbaru2.judul
+        findViewById<TextView>(R.id.tvHargaTerbaru2).text = "Rp${"%,d".format(majalahTerbaru2.harga).replace(',', '.')}"
+
         // Detail Majalah
         val cardMajalahTerbaru1 = findViewById<MaterialCardView>(R.id.cardMajalahTerbaru1)
         cardMajalahTerbaru1.setOnClickListener {
-            val intent = Intent(this, DetailMajalahActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, DetailMajalahActivity::class.java).apply { putExtra("MAJALAH_ID", majalahTerbaru1.id) })
+        }
+        findViewById<MaterialCardView>(R.id.cardMajalahTerbaru2).setOnClickListener {
+            startActivity(Intent(this, DetailMajalahActivity::class.java).apply { putExtra("MAJALAH_ID", majalahTerbaru2.id) })
         }
 
-        // Menu Akun (Terproteksi: guest diarahkan ke Sign In dulu)
+        findViewById<TextView>(R.id.tvLihatSemua).setOnClickListener {
+            startActivity(Intent(this, MajalahActivity::class.java))
+            finish()
+        }
+
+        // Menu Akun
         val navAkun = findViewById<RelativeLayout>(R.id.navAkun)
         navAkun.setOnClickListener {
             val tujuan = if (SessionManager.isLoggedIn(this)) AkunActivity::class.java else SignInActivity::class.java
             startActivity(Intent(this, tujuan))
         }
 
-        // Menu Koleksi (Terproteksi: guest diarahkan ke Sign In dulu)
+        // Menu Koleksi
         val navKoleksi = findViewById<RelativeLayout>(R.id.navKoleksi)
         navKoleksi.setOnClickListener {
             val tujuan = if (SessionManager.isLoggedIn(this)) KoleksiActivity::class.java else SignInActivity::class.java
@@ -110,7 +129,6 @@ class HomeActivity : AppCompatActivity() {
     class HeroAdapter(private val items: List<BannerItem>) : RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {
 
         class HeroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            // Kenalkan semua komponen dari XML
             val bgImage: ImageView = view.findViewById(R.id.imgBannerBgBeranda)
             val tvTitle: TextView = view.findViewById(R.id.tvBannerTitle)
             val tvSubtitle: TextView = view.findViewById(R.id.tvBannerSubtitle)
@@ -124,8 +142,6 @@ class HomeActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: HeroViewHolder, position: Int) {
             val currentItem = items[position]
-
-            // Ganti isi komponen sesuai data di urutan saat ini
             holder.bgImage.setImageResource(currentItem.image)
             holder.tvTitle.text = currentItem.title
             holder.tvSubtitle.text = currentItem.subtitle

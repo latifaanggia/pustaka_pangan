@@ -72,6 +72,7 @@
                     app:strokeWidth="0dp">
 
                     <TextView
+                        android:id="@+id/tvInisialAvatar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="O"

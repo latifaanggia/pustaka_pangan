@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F6F8"
@@ -206,113 +207,16 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="24dp"/>
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView2026"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="190dp"
                 android:layout_marginTop="12dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="24dp"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- ITEM 1 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginEnd="16dp">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_2026_vol_07" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00A859"
-                                android:text="Rp20.000"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="6dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_margin="8dp"/>
-                        </RelativeLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- ITEM 2 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginEnd="16dp">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_2026_vol_06" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00A859"
-                                android:text="Rp20.000"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="6dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_margin="8dp"/>
-                        </RelativeLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- ITEM 3 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginEnd="16dp">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_2026_vol_05" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00A859"
-                                android:text="Rp20.000"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="6dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_margin="8dp"/>
-                        </RelativeLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:orientation="horizontal"
+                android:scrollbars="none"
+                tools:listitem="@layout/item_majalah_card" />
 
             <!-- SECTION 2025 -->
             <TextView
@@ -326,114 +230,16 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginHorizontal="24dp"/>
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView2025"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_marginTop="12dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="24dp"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- ITEM 1 (2025) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="200dp"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginEnd="16dp">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_2025_vol_12" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00A859"
-                                android:text="Rp20.000"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="6dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_margin="8dp"/>
-                        </RelativeLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- ITEM 2 (2025) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="200dp"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginEnd="16dp">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_2025_vol_11" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00A859"
-                                android:text="Rp20.000"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="6dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_margin="8dp"/>
-                        </RelativeLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- ITEM 2 (2025) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="200dp"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="2dp"
-                        android:layout_marginEnd="16dp">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_2025_vol_10" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00A859"
-                                android:text="Rp20.000"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="6dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_margin="8dp"/>
-                        </RelativeLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:orientation="horizontal"
+                android:scrollbars="none"
+                tools:listitem="@layout/item_majalah_card" />
         </LinearLayout>
     </ScrollView>
 

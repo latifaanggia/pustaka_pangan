@@ -291,6 +291,7 @@
                     android:layout_centerVertical="true" />
 
                 <TextView
+                    android:id="@+id/tvLihatSemua"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lihat Semua"
@@ -332,6 +333,7 @@
                         android:outlineSpotShadowColor="#14000000">
 
                         <ImageView
+                            android:id="@+id/imgTerbaru1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/img_2026_vol_07"
@@ -339,6 +341,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <TextView
+                        android:id="@+id/tvJudulTerbaru1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="FRI VOL XXI/07 2026"
@@ -348,6 +351,7 @@
                         android:layout_marginTop="12dp" />
 
                     <TextView
+                        android:id="@+id/tvHargaTerbaru1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp20.000"
@@ -366,6 +370,7 @@
                     android:layout_marginStart="8dp">
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardMajalahTerbaru2"
                         android:layout_width="match_parent"
                         android:layout_height="230dp"
                         app:cardCornerRadius="8dp"
@@ -376,6 +381,7 @@
                         android:outlineSpotShadowColor="#14000000">
 
                         <ImageView
+                            android:id="@+id/imgTerbaru2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/img_2026_vol_06"
@@ -383,6 +389,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <TextView
+                        android:id="@+id/tvJudulTerbaru2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="FRI VOL XXI/06 2026"
@@ -392,6 +399,7 @@
                         android:layout_marginTop="12dp" />
 
                     <TextView
+                        android:id="@+id/tvHargaTerbaru2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp20.000"

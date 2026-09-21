@@ -1,10 +1,11 @@
-package com.example.pustakapangan
+package com.example.pustakapangan // JANGAN DIHAPUS: Sesuaikan dengan namamu
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
@@ -14,6 +15,7 @@ class AkunActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (!SessionManager.isLoggedIn(this)) {
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
@@ -21,6 +23,14 @@ class AkunActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_akun)
+
+        val user = CustomerRepository.getUserAktif()
+        if (user != null) {
+            findViewById<TextView>(R.id.tvNamaUser).text = "${user.namaDepan} ${user.namaBelakang}".trim()
+            findViewById<TextView>(R.id.tvInisialAvatar).text = user.inisial()
+            val saldoFormat = java.text.NumberFormat.getNumberInstance(java.util.Locale("in", "ID")).format(user.saldo)
+            findViewById<TextView>(R.id.tvSaldo).text = "Rp $saldoFormat"
+        }
 
         // Menu Ubah Password
         val menuUbahPassword = findViewById<MaterialCardView>(R.id.menuUbahPassword)
@@ -59,6 +69,7 @@ class AkunActivity : AppCompatActivity() {
         val menuLogout = findViewById<MaterialCardView>(R.id.menuLogout)
         menuLogout.setOnClickListener {
             SessionManager.logout(this)
+            CustomerRepository.logout() // ⬅️ Reset juga data Customer aktif, biar gak nyisa punya user sebelumnya
             Toast.makeText(this, "Berhasil Logout", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, SignInActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
