@@ -11,8 +11,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.launch
 
 class SignInActivity : AppCompatActivity() {
 
@@ -52,13 +54,23 @@ class SignInActivity : AppCompatActivity() {
         // Tombol Masuk
         btnMasuk.setOnClickListener {
             val email = etEmailSignIn.text.toString().trim()
-            val namaDariEmail = email.substringBefore("@").replaceFirstChar { it.uppercase() }
+            val password = etPasswordSignIn.text.toString().trim()
 
-            CustomerRepository.signIn(this, email, Customer(id = 1, namaDepan = namaDariEmail, namaBelakang = "", email = email, saldo = 1000000))
-            SessionManager.setLoggedIn(this, true)
-            Toast.makeText(this, "Berhasil Masuk!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+            btnMasuk.isEnabled = false
+            btnMasuk.text = "Memproses..."
+            lifecycleScope.launch {
+                try {
+                    CustomerRepository.signIn(this@SignInActivity, email, password)
+                    SessionManager.setLoggedIn(this@SignInActivity, true)
+                    Toast.makeText(this@SignInActivity, "Berhasil Masuk!", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@SignInActivity, HomeActivity::class.java))
+                    finish()
+                } catch (e: Exception) {
+                    Toast.makeText(this@SignInActivity, "Gagal masuk: ${e.message}", Toast.LENGTH_LONG).show()
+                    btnMasuk.isEnabled = true
+                    btnMasuk.text = "Masuk"
+                }
+            }
         }
 
         val tvDaftar = findViewById<TextView>(R.id.tvDaftar)
@@ -66,11 +78,7 @@ class SignInActivity : AppCompatActivity() {
 
         val btnGoogle = findViewById<MaterialCardView>(R.id.btnGoogle)
         btnGoogle.setOnClickListener {
-            CustomerRepository.signIn(this, "user@gmail.com", Customer(id = 1, namaDepan = "Pengguna", namaBelakang = "Google", email = "user@gmail.com", saldo = 1000000, provider = "google"))
-            SessionManager.setLoggedIn(this, true)
-            Toast.makeText(this, "Berhasil masuk dengan Google!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+            Toast.makeText(this, "SSO Google belum tersedia di prototipe ini", Toast.LENGTH_SHORT).show()
         }
     }
 }

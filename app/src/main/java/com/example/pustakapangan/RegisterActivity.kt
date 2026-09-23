@@ -13,9 +13,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -65,29 +67,31 @@ class RegisterActivity : AppCompatActivity() {
 
         // Tombol Daftar Akun
         btnDaftarAkun.setOnClickListener {
-            CustomerRepository.daftarkanCustomerBaru(this,
-                Customer(
-                    id = 1,
-                    namaDepan = etNamaDepan.text.toString(),
-                    namaBelakang = etNamaBelakang.text.toString(),
-                    email = etEmailReg.text.toString(),
-                    saldo = 0
-                )
-            )
-            SessionManager.setLoggedIn(this, true)
-            Toast.makeText(this, "Akun berhasil dibuat!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+            btnDaftarAkun.isEnabled = false
+            btnDaftarAkun.text = "Memproses..."
+            lifecycleScope.launch {
+                try {
+                    CustomerRepository.daftar(
+                        this@RegisterActivity,
+                        etNamaDepan.text.toString(),
+                        etNamaBelakang.text.toString(),
+                        etEmailReg.text.toString(),
+                        etPasswordReg.text.toString()
+                    )
+                    SessionManager.setLoggedIn(this@RegisterActivity, true)
+                    Toast.makeText(this@RegisterActivity, "Akun berhasil dibuat!", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@RegisterActivity, HomeActivity::class.java))
+                    finish()
+                } catch (e: Exception) {
+                    Toast.makeText(this@RegisterActivity, "Gagal daftar: ${e.message}", Toast.LENGTH_LONG).show()
+                    btnDaftarAkun.isEnabled = true
+                    btnDaftarAkun.text = "Daftar Akun"
+                }
+            }
         }
 
         findViewById<MaterialCardView>(R.id.btnGoogleReg).setOnClickListener {
-            CustomerRepository.daftarkanCustomerBaru(this,
-                Customer(id = 1, namaDepan = "Pengguna", namaBelakang = "Google", email = "user@gmail.com", saldo = 0, provider = "google")
-            )
-            SessionManager.setLoggedIn(this, true)
-            Toast.makeText(this, "Berhasil daftar dengan Google!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+            Toast.makeText(this, "SSO Google belum tersedia di prototipe ini", Toast.LENGTH_SHORT).show()
         }
 
         // Sudah punya akun? Kembali ke Sign In

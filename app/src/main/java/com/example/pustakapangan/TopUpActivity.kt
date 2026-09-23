@@ -111,7 +111,7 @@ class TopUpActivity : AppCompatActivity() {
             }
             val namaMetode = if (metodeTerpilih == "BCA") "BCA Transfer" else "QRIS"
 
-            val customerId = CustomerRepository.getUserAktif(this)?.id ?: 1
+            val customerId = CustomerRepository.getUserAktif(this)?.id ?: ""
             TopUpRepository.tambahRiwayat(customerId, nominalInt, namaMetode)
 
             val tujuan = if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java else KonfirmasiQrisActivity::class.java
