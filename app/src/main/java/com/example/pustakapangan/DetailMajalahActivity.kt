@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -15,8 +16,9 @@ import com.google.android.material.card.MaterialCardView
 class DetailMajalahActivity : AppCompatActivity() {
     private var halamanSaatIni = 1
     private lateinit var majalah: Majalah
-    private lateinit var daftarGambar: List<Int>
-    private val totalHalaman get() = daftarGambar.size
+    private var daftarGambarLokal: List<Int> = emptyList()
+    private val pakaiPratinjauLokal get() = daftarGambarLokal.isNotEmpty()
+    private val totalHalaman get() = if (pakaiPratinjauLokal) daftarGambarLokal.size else 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,13 +34,13 @@ class DetailMajalahActivity : AppCompatActivity() {
         val majalahId = intent.getIntExtra("MAJALAH_ID", 7)
         majalah = MajalahRepository.getById(majalahId) ?: MajalahRepository.getSemuaMajalah().first()
 
-        daftarGambar = if (majalah.id == 7) {
+        daftarGambarLokal = if (majalah.id == 7) {
             listOf(
                 R.drawable.img_2026_vol_07, R.drawable.img_2026_vol_07_hal2, R.drawable.img_2026_vol_07_hal3,
                 R.drawable.img_2026_vol_07_hal4, R.drawable.img_2026_vol_07_hal5, R.drawable.img_2026_vol_07_hal6
             )
         } else {
-            listOf(majalah.urlCover)
+            emptyList()
         }
 
         tampilkanDataMajalah()
@@ -47,18 +49,26 @@ class DetailMajalahActivity : AppCompatActivity() {
     }
 
     private fun tampilkanDataMajalah() {
-        findViewById<ImageView>(R.id.imgCover).setImageResource(majalah.urlCover)
+        Glide.with(this).load(majalah.urlCover).into(findViewById<ImageView>(R.id.imgCover))
         findViewById<TextView>(R.id.tvJudulMajalah).text = majalah.judul
         findViewById<TextView>(R.id.tvHarga).text = "Rp ${formatRupiah(majalah.harga)}"
-        findViewById<ImageView>(R.id.imgPratinjau).setImageResource(daftarGambar[0])
+        tampilkanHalamanPratinjau(1)
         findViewById<TextView>(R.id.tvHalamanPratinjau).text = "1 / $totalHalaman"
+    }
+
+    private fun tampilkanHalamanPratinjau(halaman: Int) {
+        val imgPratinjau = findViewById<ImageView>(R.id.imgPratinjau)
+        if (pakaiPratinjauLokal) {
+            imgPratinjau.setImageResource(daftarGambarLokal[halaman - 1])
+        } else {
+            Glide.with(this).load(majalah.urlCover).into(imgPratinjau)
+        }
     }
 
     private fun formatRupiah(angka: Int): String =
         java.text.NumberFormat.getNumberInstance(java.util.Locale("in", "ID")).format(angka)
 
     private fun setupPratinjauEditorial() {
-        val imgPratinjau = findViewById<ImageView>(R.id.imgPratinjau)
         val tvHalamanPratinjau = findViewById<TextView>(R.id.tvHalamanPratinjau)
         val btnPanahKiri = findViewById<MaterialCardView>(R.id.btnPanahKiri)
         val btnPanahKanan = findViewById<MaterialCardView>(R.id.btnPanahKanan)
@@ -67,7 +77,7 @@ class DetailMajalahActivity : AppCompatActivity() {
             if (halamanSaatIni < totalHalaman) {
                 halamanSaatIni++
                 tvHalamanPratinjau.text = "$halamanSaatIni / $totalHalaman"
-                imgPratinjau.setImageResource(daftarGambar[halamanSaatIni - 1])
+                tampilkanHalamanPratinjau(halamanSaatIni)
             }
         }
 
@@ -75,7 +85,7 @@ class DetailMajalahActivity : AppCompatActivity() {
             if (halamanSaatIni > 1) {
                 halamanSaatIni--
                 tvHalamanPratinjau.text = "$halamanSaatIni / $totalHalaman"
-                imgPratinjau.setImageResource(daftarGambar[halamanSaatIni - 1])
+                tampilkanHalamanPratinjau(halamanSaatIni)
             }
         }
     }
@@ -104,7 +114,7 @@ class DetailMajalahActivity : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.dialog_konfirmasi_pembelian, null)
         sheet.setContentView(view)
 
-        view.findViewById<ImageView>(R.id.imgCoverSheet).setImageResource(majalah.urlCover)
+        Glide.with(this).load(majalah.urlCover).into(view.findViewById<ImageView>(R.id.imgCoverSheet))
         view.findViewById<TextView>(R.id.tvJudulSheet).text = majalah.judul
         view.findViewById<TextView>(R.id.tvHargaSheet).text = "Rp${formatRupiah(majalah.harga)}"
         view.findViewById<TextView>(R.id.tvHargaPotong).text = "- Rp${formatRupiah(majalah.harga)}"

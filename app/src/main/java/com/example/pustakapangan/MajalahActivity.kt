@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
@@ -153,7 +154,7 @@ class MajalahActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: HeroViewHolder, position: Int) {
             val currentItem = items[position]
-            holder.bgImage.setImageResource(currentItem.image)
+            Glide.with(holder.itemView).load(currentItem.image).into(holder.bgImage)
             holder.tvTag.text = currentItem.tagText
             holder.tvTitle.text = currentItem.title
             holder.btnBeli.text = currentItem.buttonText
@@ -180,7 +181,7 @@ class MajalahActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: GridViewHolder, position: Int) {
             val majalah = items[position]
-            holder.imgCover.setImageResource(majalah.urlCover)
+            Glide.with(holder.itemView).load(majalah.urlCover).into(holder.imgCover)
             holder.tvHarga.text = "Rp${"%,d".format(majalah.harga).replace(',', '.')}"
             holder.itemView.setOnClickListener { onItemClick(majalah.id) }
         }
@@ -192,7 +193,7 @@ class MajalahActivity : AppCompatActivity() {
 // hero majalah
 data class BannerMajalahItem(
     val majalahId: Int,
-    val image: Int,
+    val image: String,
     val tagText: String,
     val title: String,
     val buttonText: String

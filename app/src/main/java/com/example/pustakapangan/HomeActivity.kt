@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 
 class HomeActivity : AppCompatActivity() {
@@ -34,11 +35,11 @@ class HomeActivity : AppCompatActivity() {
         val majalahTerbaru1 = duaTerbaru[0]
         val majalahTerbaru2 = duaTerbaru[1]
 
-        findViewById<ImageView>(R.id.imgTerbaru1).setImageResource(majalahTerbaru1.urlCover)
+        findViewById<ImageView>(R.id.imgTerbaru1).let { Glide.with(this).load(majalahTerbaru1.urlCover).into(it) }
         findViewById<TextView>(R.id.tvJudulTerbaru1).text = majalahTerbaru1.judul
         findViewById<TextView>(R.id.tvHargaTerbaru1).text = "Rp${"%,d".format(majalahTerbaru1.harga).replace(',', '.')}"
 
-        findViewById<ImageView>(R.id.imgTerbaru2).setImageResource(majalahTerbaru2.urlCover)
+        findViewById<ImageView>(R.id.imgTerbaru2).let { Glide.with(this).load(majalahTerbaru2.urlCover).into(it) }
         findViewById<TextView>(R.id.tvJudulTerbaru2).text = majalahTerbaru2.judul
         findViewById<TextView>(R.id.tvHargaTerbaru2).text = "Rp${"%,d".format(majalahTerbaru2.harga).replace(',', '.')}"
 

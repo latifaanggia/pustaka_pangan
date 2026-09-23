@@ -8,7 +8,7 @@ data class Majalah(
     val judul: String,
     val tahun: Int,
     val harga: Int,
-    val urlCover: Int,
+    val urlCover: String,
     val namaFilePdf: String,
     val daftarIsi: String
 )
@@ -18,23 +18,12 @@ object MajalahRepository {
     var sudahDimuat = false
         private set
 
-    private val petaCoverLokal = mapOf(
-        "img_2026_vol_07.png" to R.drawable.img_2026_vol_07,
-        "img_2026_vol_06.png" to R.drawable.img_2026_vol_06,
-        "img_2026_vol_05.png" to R.drawable.img_2026_vol_05,
-        "img_2026_vol_04.png" to R.drawable.img_2026_vol_04,
-        "img_2025_vol_12.png" to R.drawable.img_2025_vol_12,
-        "img_2025_vol_11.png" to R.drawable.img_2025_vol_11,
-        "img_2025_vol_10.png" to R.drawable.img_2025_vol_10
-    )
-
     suspend fun muatDariSupabase() {
         val json = SupabaseConfig.get("majalah?select=*")
         val array = JSONArray(json)
         val hasil = mutableListOf<Majalah>()
         for (i in 0 until array.length()) {
             val obj = array.getJSONObject(i)
-            val namaCover = obj.optString("url_cover")
             hasil.add(
                 Majalah(
                     id = obj.getInt("id"),
@@ -42,7 +31,7 @@ object MajalahRepository {
                     judul = obj.getString("judul"),
                     tahun = obj.optInt("tahun"),
                     harga = obj.getInt("harga"),
-                    urlCover = petaCoverLokal[namaCover] ?: R.drawable.img_2026_vol_07,
+                    urlCover = obj.optString("url_cover"), // ⬅️ FIX: langsung URL asli dari database, gak perlu jembatan lokal lagi
                     namaFilePdf = obj.optString("url_pdf"),
                     daftarIsi = obj.optString("daftar_isi")
                 )
