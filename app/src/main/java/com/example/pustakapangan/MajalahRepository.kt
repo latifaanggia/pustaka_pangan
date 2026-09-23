@@ -1,33 +1,56 @@
 package com.example.pustakapangan
 
+import org.json.JSONArray
+
 data class Majalah(
-    val id: Int,             // ⬅️ product_id
-    val kategoriId: Int,     // ⬅️ category_id
-    val judul: String,       // ⬅️ name
+    val id: Int,
+    val kategoriId: Int,
+    val judul: String,
     val tahun: Int,
-    val harga: Int,          // ⬅️ price
-    val urlCover: Int,       // ⬅️ image
-    val namaFilePdf: String, // ⬅️ pdf
-    val daftarIsi: String    // ⬅️ daftarisi
+    val harga: Int,
+    val urlCover: Int,
+    val namaFilePdf: String,
+    val daftarIsi: String
 )
 
 object MajalahRepository {
-    private val daftarMajalah = listOf(
-        Majalah(7, 1, "FRI VOL XXI/07 2026", 2026, 20000, R.drawable.img_2026_vol_07, "2026_vol_07.pdf",
-            "Sains, Data, dan Analisis: Fondasi Transformasi Sistem Pangan"),
-        Majalah(6, 1, "FRI VOL XXI/06 2026", 2026, 20000, R.drawable.img_2026_vol_06, "2026_vol_06.pdf",
-            "Masa Depan Pangan & Diet Sehat: Rethinking Food Science di Era Digital"),
-        Majalah(5, 1, "FRI VOL XXI/05 2026", 2026, 20000, R.drawable.img_2026_vol_05, "2026_vol_05.pdf",
-            "Industri Pengolahan Susu Masa Depan"),
-        Majalah(4, 1, "FRI VOL XXI/04 2026", 2026, 20000, R.drawable.img_2026_vol_04, "2026_vol_04.pdf",
-            "Ketahanan Pangan Lokal di Tengah Perubahan Iklim"),
-        Majalah(12, 1, "FRI VOL XX/12 2025", 2025, 20000, R.drawable.img_2025_vol_12, "2025_vol_12.pdf",
-            "Refleksi Akhir Tahun: Inovasi Pangan Sepanjang 2025"),
-        Majalah(11, 1, "FRI VOL XX/11 2025", 2025, 20000, R.drawable.img_2025_vol_11, "2025_vol_11.pdf",
-            "Food Processing for a Sustainable Future"),
-        Majalah(10, 1, "FRI VOL XX/10 2025", 2025, 20000, R.drawable.img_2025_vol_10, "2025_vol_10.pdf",
-            "Keamanan Pangan: Dinamika, Risiko, dan Tantangan")
+    private var daftarMajalah: List<Majalah> = emptyList()
+    var sudahDimuat = false
+        private set
+
+    private val petaCoverLokal = mapOf(
+        "img_2026_vol_07.png" to R.drawable.img_2026_vol_07,
+        "img_2026_vol_06.png" to R.drawable.img_2026_vol_06,
+        "img_2026_vol_05.png" to R.drawable.img_2026_vol_05,
+        "img_2026_vol_04.png" to R.drawable.img_2026_vol_04,
+        "img_2025_vol_12.png" to R.drawable.img_2025_vol_12,
+        "img_2025_vol_11.png" to R.drawable.img_2025_vol_11,
+        "img_2025_vol_10.png" to R.drawable.img_2025_vol_10
     )
+
+    suspend fun muatDariSupabase() {
+        val json = SupabaseConfig.get("majalah?select=*")
+        val array = JSONArray(json)
+        val hasil = mutableListOf<Majalah>()
+        for (i in 0 until array.length()) {
+            val obj = array.getJSONObject(i)
+            val namaCover = obj.optString("url_cover")
+            hasil.add(
+                Majalah(
+                    id = obj.getInt("id"),
+                    kategoriId = obj.optInt("kategori_id"),
+                    judul = obj.getString("judul"),
+                    tahun = obj.optInt("tahun"),
+                    harga = obj.getInt("harga"),
+                    urlCover = petaCoverLokal[namaCover] ?: R.drawable.img_2026_vol_07,
+                    namaFilePdf = obj.optString("url_pdf"),
+                    daftarIsi = obj.optString("daftar_isi")
+                )
+            )
+        }
+        daftarMajalah = hasil
+        sudahDimuat = true
+    }
 
     fun getSemuaMajalah(): List<Majalah> = daftarMajalah
 

@@ -27,6 +27,13 @@ class KoleksiActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_koleksi)
 
+        if (MajalahRepository.getSemuaMajalah().isEmpty()) {
+            Toast.makeText(this, "Gagal memuat data majalah. Cek koneksi internet lalu coba lagi.", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
+
         val majalahVol06 = MajalahRepository.getById(6)!!
         val majalahVol05 = MajalahRepository.getById(5)!!
 

@@ -2,25 +2,25 @@ package com.example.pustakapangan
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    private val splashHandler = Handler(Looper.getMainLooper())
-    private val splashRunnable = Runnable {
-        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        splashHandler.postDelayed(splashRunnable, 3000)
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        splashHandler.removeCallbacks(splashRunnable)
+        lifecycleScope.launch {
+            try {
+                MajalahRepository.muatDariSupabase()
+            } catch (e: Exception) {
+                Toast.makeText(this@MainActivity, "Gagal memuat data: cek koneksi internet", Toast.LENGTH_LONG).show()
+            }
+            startActivity(Intent(this@MainActivity, HomeActivity::class.java))
+            finish()
+        }
     }
 }

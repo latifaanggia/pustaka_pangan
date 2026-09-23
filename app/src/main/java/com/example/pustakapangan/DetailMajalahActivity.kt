@@ -22,6 +22,13 @@ class DetailMajalahActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_majalah)
 
+        if (MajalahRepository.getSemuaMajalah().isEmpty()) {
+            android.widget.Toast.makeText(this, "Gagal memuat data majalah. Cek koneksi internet lalu coba lagi.", android.widget.Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
+
         val majalahId = intent.getIntExtra("MAJALAH_ID", 7)
         majalah = MajalahRepository.getById(majalahId) ?: MajalahRepository.getSemuaMajalah().first()
 

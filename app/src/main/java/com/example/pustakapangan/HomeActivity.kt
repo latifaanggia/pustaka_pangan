@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -21,6 +22,13 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        if (MajalahRepository.getSemuaMajalah().isEmpty()) {
+            Toast.makeText(this, "Gagal memuat data majalah. Cek koneksi internet lalu coba lagi.", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
 
         val duaTerbaru = MajalahRepository.getTerbaru(2)
         val majalahTerbaru1 = duaTerbaru[0]
