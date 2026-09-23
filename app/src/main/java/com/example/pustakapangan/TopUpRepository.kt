@@ -1,33 +1,64 @@
 package com.example.pustakapangan
 
+import org.json.JSONArray
+import org.json.JSONObject
+
 data class RiwayatTopUp(
-    val id: Int,            // topup_id
+    val id: Int,
     val customerId: String,
     val saldo: Int,
-    val status: String,     // "Menunggu Konfirmasi" / "Berhasil" / "Ditolak"
+    val status: String,
     val tanggal: String,
-    val metode: String,     // method: "BCA Transfer" / "QRIS"
-    val noInvoice: String   // custom
+    val metode: String,
+    val noInvoice: String
 )
 
 object TopUpRepository {
-    private val daftarRiwayat = mutableListOf(
-        RiwayatTopUp(2, "dummy-1", 20000, "Menunggu Konfirmasi", "07 Agustus 2026, 11.45", "BCA Transfer", "INV-20260807-002"),
-        RiwayatTopUp(1, "dummy-1", 100000, "Berhasil", "20 Juli 2026, 14.10", "BCA Transfer", "INV-20260720-091")
-    )
+    suspend fun getRiwayatByCustomer(accessToken: String, customerId: String): List<RiwayatTopUp> {
+        val json = SupabaseConfig.get("topup?customer_id=eq.$customerId&select=*&order=id.desc", accessToken)
+        return parseDaftarRiwayat(JSONArray(json))
+    }
 
-    fun getRiwayatByCustomer(customerId: String): List<RiwayatTopUp> =
-        daftarRiwayat.filter { it.customerId == customerId }.sortedByDescending { it.id }
+    suspend fun tambahRiwayat(accessToken: String, customerId: String, saldo: Int, metode: String): RiwayatTopUp {
+        val bodyJson = JSONObject().apply {
+            put("customer_id", customerId)
+            put("nominal", saldo)
+            put("metode", metode)
+            put("status", "Menunggu Konfirmasi")
+        }.toString()
 
-    fun getMenungguKonfirmasi(customerId: String): List<RiwayatTopUp> =
-        getRiwayatByCustomer(customerId).filter { it.status == "Menunggu Konfirmasi" }
+        val hasil = JSONArray(SupabaseConfig.postRest("topup", bodyJson, accessToken))
+        return parseDaftarRiwayat(hasil).first()
+    }
 
-    fun tambahRiwayat(customerId: String, saldo: Int, metode: String): RiwayatTopUp {
-        val idBaru = (daftarRiwayat.maxOfOrNull { it.id } ?: 0) + 1
-        val sekarang = java.text.SimpleDateFormat("dd MMMM yyyy, HH.mm", java.util.Locale("in", "ID")).format(java.util.Date())
-        val noInvoice = "INV-${java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.US).format(java.util.Date())}-${(100..999).random()}"
-        val riwayatBaru = RiwayatTopUp(idBaru, customerId, saldo, "Menunggu Konfirmasi", sekarang, metode, noInvoice)
-        daftarRiwayat.add(riwayatBaru)
-        return riwayatBaru
+    private fun parseDaftarRiwayat(array: JSONArray): List<RiwayatTopUp> {
+        val hasil = mutableListOf<RiwayatTopUp>()
+        for (i in 0 until array.length()) {
+            val obj = array.getJSONObject(i)
+            val id = obj.getInt("id")
+            hasil.add(
+                RiwayatTopUp(
+                    id = id,
+                    customerId = obj.getString("customer_id"),
+                    saldo = obj.getInt("nominal"),
+                    status = obj.getString("status"),
+                    tanggal = formatTanggal(obj.optString("tanggal")),
+                    metode = obj.optString("metode"),
+                    noInvoice = "INV-%05d".format(id)
+                )
+            )
+        }
+        return hasil
+    }
+
+    private fun formatTanggal(iso: String): String {
+        return try {
+            val bagianTanggal = iso.take(19)
+            val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US)
+            val formatter = java.text.SimpleDateFormat("dd MMMM yyyy, HH.mm", java.util.Locale("in", "ID"))
+            formatter.format(parser.parse(bagianTanggal)!!)
+        } catch (e: Exception) {
+            iso
+        }
     }
 }

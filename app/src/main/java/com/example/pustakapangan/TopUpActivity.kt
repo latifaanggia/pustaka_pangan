@@ -8,8 +8,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.launch
 
 class TopUpActivity : AppCompatActivity() {
     private var metodeTerpilih = "BCA"
@@ -111,11 +113,25 @@ class TopUpActivity : AppCompatActivity() {
             }
             val namaMetode = if (metodeTerpilih == "BCA") "BCA Transfer" else "QRIS"
 
-            val customerId = CustomerRepository.getUserAktif(this)?.id ?: ""
-            TopUpRepository.tambahRiwayat(customerId, nominalInt, namaMetode)
+            val user = CustomerRepository.getUserAktif(this)
+            if (user == null) {
+                android.widget.Toast.makeText(this, "Sesi login habis, silakan masuk lagi.", android.widget.Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
 
-            val tujuan = if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java else KonfirmasiQrisActivity::class.java
-            startActivity(Intent(this, tujuan).apply { putExtra("NOMINAL_TOPUP", "Rp${"%,d".format(nominalInt).replace(',', '.')}") })
+            btnProsesTopUp.isEnabled = false
+            btnProsesTopUp.text = "Memproses..."
+            lifecycleScope.launch {
+                try {
+                    TopUpRepository.tambahRiwayat(user.accessToken, user.id, nominalInt, namaMetode)
+                    val tujuan = if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java else KonfirmasiQrisActivity::class.java
+                    startActivity(Intent(this@TopUpActivity, tujuan).apply { putExtra("NOMINAL_TOPUP", "Rp${"%,d".format(nominalInt).replace(',', '.')}") })
+                } catch (e: Exception) {
+                    android.widget.Toast.makeText(this@TopUpActivity, "Gagal top up: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                    btnProsesTopUp.isEnabled = true
+                    btnProsesTopUp.text = "Top Up Sekarang"
+                }
+            }
         }
     }
 }

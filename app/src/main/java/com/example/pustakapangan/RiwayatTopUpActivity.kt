@@ -11,10 +11,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.launch
 
 class RiwayatTopUpActivity : AppCompatActivity() {
 
@@ -25,11 +27,22 @@ class RiwayatTopUpActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageView>(R.id.btnBack)
         btnBack.setOnClickListener { finish() }
 
-        val customerId = CustomerRepository.getUserAktif(this)?.id ?: ""
-        findViewById<RecyclerView>(R.id.recyclerViewRiwayat).apply {
-            layoutManager = LinearLayoutManager(this@RiwayatTopUpActivity)
-            adapter = RiwayatTopUpAdapter(TopUpRepository.getRiwayatByCustomer(customerId)) { pesanWa ->
-                bukaWhatsApp(pesanWa)
+        val user = CustomerRepository.getUserAktif(this)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewRiwayat)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        if (user == null) {
+            Toast.makeText(this, "Sesi login habis, silakan masuk lagi.", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val daftarRiwayat = TopUpRepository.getRiwayatByCustomer(user.accessToken, user.id)
+                recyclerView.adapter = RiwayatTopUpAdapter(daftarRiwayat) { pesanWa -> bukaWhatsApp(pesanWa) }
+            } catch (e: Exception) {
+                Toast.makeText(this@RiwayatTopUpActivity, "Gagal memuat riwayat: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
