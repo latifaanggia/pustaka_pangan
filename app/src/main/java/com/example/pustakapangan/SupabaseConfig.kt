@@ -6,7 +6,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object SupabaseConfig {
-    private const val PROJECT_URL = "https://jteteeubteryqfgrnjks.supabase.co"
+    const val PROJECT_URL = "https://jteteeubteryqfgrnjks.supabase.co"
     const val ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZXRlZXVidGVyeXFmZ3JuamtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjkzNjgsImV4cCI6MjEwNTcwNTM2OH0.DvfxObIzo-HcewLlVDmqHcF71e66dflaz7yukJPw0MQ"
 
     suspend fun get(path: String, accessToken: String? = null): String =
@@ -29,7 +29,7 @@ object SupabaseConfig {
 
             if (bodyJson != null) {
                 connection.doOutput = true
-                connection.setRequestProperty("Prefer", "return=representation") // ⬅️ biar hasil INSERT dikembalikan, bukan kosong
+                connection.setRequestProperty("Prefer", "return=representation")
                 connection.outputStream.use { it.write(bodyJson.toByteArray()) }
             }
 

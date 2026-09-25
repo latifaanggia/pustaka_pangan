@@ -20,8 +20,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
 
 class EReaderActivity : AppCompatActivity() {
 
@@ -30,6 +32,7 @@ class EReaderActivity : AppCompatActivity() {
     private lateinit var parcelFileDescriptor: ParcelFileDescriptor
     private var currentPage = 0
     private var namaFilePdf = "2026_vol_07.pdf"
+    private var isOfflineMode = false
 
     // VIEW
     private lateinit var imgPage: ImageView
@@ -85,7 +88,7 @@ class EReaderActivity : AppCompatActivity() {
         val judulMajalah = intent.getStringExtra("JUDUL_MAJALAH") ?: "FRI VOL XXI/07 2026"
         tvTitle.text = judulMajalah
 
-        openPdf()
+        siapkanPdf()
     }
 
     private fun initViews() {
@@ -104,9 +107,7 @@ class EReaderActivity : AppCompatActivity() {
         tvPageNumber.paintFlags = tvPageNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
 
-    // =========================
     // SCALE DETECTOR (ZOOM)
-    // =========================
     private fun setupScaleDetector() {
         scaleDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
@@ -128,9 +129,7 @@ class EReaderActivity : AppCompatActivity() {
         })
     }
 
-    // =========================
     // BUTTONS & INTERACTIONS
-    // =========================
     private fun setupButtons() {
         btnBack.setOnClickListener { finish() }
         btnFullscreen.setOnClickListener { toggleReaderControls() }
@@ -143,9 +142,7 @@ class EReaderActivity : AppCompatActivity() {
         tvPageNumber.setOnClickListener { showPageJumpDialog() }
     }
 
-    // =========================
     // PDF TOUCH (TAP TO TOGGLE)
-    // =========================
     private fun setupPdfTouch() {
         imgPage.setOnTouchListener { _, event ->
             scaleDetector.onTouchEvent(event)
@@ -169,9 +166,7 @@ class EReaderActivity : AppCompatActivity() {
         }
     }
 
-    // =========================
     // LOMPAT HALAMAN (DIALOG)
-    // =========================
     private fun showPageJumpDialog() {
         if (!::pdfRenderer.isInitialized) return
 
@@ -200,42 +195,37 @@ class EReaderActivity : AppCompatActivity() {
             .show()
     }
 
-    // =========================
-    // OPEN PDF
-    // =========================
-    private fun openPdf() {
-        try {
-            val pdfFile = getPdfFile()
-            parcelFileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
-            pdfRenderer = PdfRenderer(parcelFileDescriptor)
-
-            currentPage = 0
-            currentScale = 1f
-
-            updatePageNumber()
-            updateNavigationButton()
-            updateOnlineStatus()
-            renderPage()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Gagal membuka PDF: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun getPdfFile(): File {
-        val localFile = File(filesDir, namaFilePdf)
-        if (!localFile.exists()) {
-            assets.open(namaFilePdf).use { input ->
-                FileOutputStream(localFile).use { output ->
-                    input.copyTo(output)
-                }
+    // LOCAL STORAGE / CACHE / DOWNLOAD
+    private fun siapkanPdf() {
+        val modeOffline = intent.getBooleanExtra("IS_OFFLINE", false) || PdfDownloader.sudahDiunduh(this, namaFilePdf)
+        val target = if (modeOffline) PdfDownloader.fileOffline(this, namaFilePdf) else PdfDownloader.fileCache(this, namaFilePdf)
+        if (target.exists() && target.length() > 0) { openPdf(target, modeOffline); return }
+        tvStatus.text = "Menyiapkan majalah..."; tvStatus.setTextColor(Color.parseColor("#6B7280")); tvPageNumber.text = "- / -"
+        lifecycleScope.launch {
+            try { openPdf(PdfDownloader.unduh(namaFilePdf, target) { tvStatus.text = "Memuat majalah $it%" }, modeOffline) }
+            catch (e: CancellationException) { throw e }
+            catch (e: Exception) {
+                tvStatus.text = "Gagal memuat majalah"; tvStatus.setTextColor(Color.parseColor("#DC2626"))
+                Toast.makeText(this@EReaderActivity, e.message ?: "Gagal mengunduh majalah", Toast.LENGTH_LONG).show()
             }
         }
-        return localFile
     }
 
-    // =========================
+    private fun openPdf(pdfFile: File, modeOffline: Boolean) {
+        try {
+            parcelFileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+            pdfRenderer = PdfRenderer(parcelFileDescriptor)
+            isOfflineMode = modeOffline; currentPage = 0; currentScale = 1f
+            updatePageNumber(); updateNavigationButton(); updateOnlineStatus(); renderPage()
+        } catch (e: Exception) {
+            if (::parcelFileDescriptor.isInitialized) parcelFileDescriptor.close()
+            PdfDownloader.hapusFile(pdfFile)
+            tvStatus.text = "File majalah rusak"; tvStatus.setTextColor(Color.parseColor("#DC2626"))
+            Toast.makeText(this, "File rusak, silakan buka ulang majalah untuk mengunduh kembali", Toast.LENGTH_LONG).show()
+        }
+    }
+
     // RENDER PAGE
-    // =========================
     private fun renderPage() {
         if (!::pdfRenderer.isInitialized) return
         if (currentPage < 0 || currentPage >= pdfRenderer.pageCount) return
@@ -261,9 +251,7 @@ class EReaderActivity : AppCompatActivity() {
         updateNavigationButton()
     }
 
-    // =========================
     // NEXT & PREVIOUS PAGE
-    // =========================
     private fun nextPage() {
         if (!::pdfRenderer.isInitialized) return
         if (currentPage < pdfRenderer.pageCount - 1) {
@@ -291,9 +279,7 @@ class EReaderActivity : AppCompatActivity() {
         btnNext.alpha = if (currentPage == pdfRenderer.pageCount - 1) 0.4f else 1f
     }
 
-    // =========================
     // ZOOM IN / OUT
-    // =========================
     private fun zoomIn() {
         currentScale += 0.25f
         currentScale = currentScale.coerceAtMost(4f)
@@ -311,9 +297,7 @@ class EReaderActivity : AppCompatActivity() {
         imgPage.scaleY = currentScale
     }
 
-    // =========================
     // FULLSCREEN READER
-    // =========================
     private fun toggleReaderControls() {
         isFullscreenReader = !isFullscreenReader
         val header = findViewById<View>(R.id.headerReader)
@@ -332,13 +316,9 @@ class EReaderActivity : AppCompatActivity() {
         }
     }
 
-    // =========================
     // ONLINE STATUS & MENU
-    // =========================
     private fun updateOnlineStatus() {
-        val isOffline = intent.getBooleanExtra("IS_OFFLINE", false)
-
-        if (isOffline) {
+        if (isOfflineMode) {
             tvStatus.text = "Membaca Offline"
             tvStatus.setTextColor(Color.parseColor("#E67E22")) // Oranye
         } else {
@@ -358,14 +338,23 @@ class EReaderActivity : AppCompatActivity() {
                     Toast.makeText(this, "Daftar Isi belum tersedia", Toast.LENGTH_SHORT).show()
                     true
                 }
-                "⬇ Unduh Offline" -> {
-                    Toast.makeText(this, "Majalah sudah tersedia offline", Toast.LENGTH_SHORT).show()
-                    true
-                }
+                "⬇ Unduh Offline" -> { unduhOffline(); true }
                 else -> false
             }
         }
         popup.show()
+    }
+
+    private fun unduhOffline() {
+        when {
+            !::pdfRenderer.isInitialized -> Toast.makeText(this, "Tunggu majalah selesai dimuat", Toast.LENGTH_SHORT).show()
+            isOfflineMode -> Toast.makeText(this, "Majalah sudah tersedia offline", Toast.LENGTH_SHORT).show()
+            else -> lifecycleScope.launch {
+                try { PdfDownloader.simpanDariCache(this@EReaderActivity, namaFilePdf); isOfflineMode = true; updateOnlineStatus(); Toast.makeText(this@EReaderActivity, "Majalah tersimpan, bisa dibaca tanpa internet", Toast.LENGTH_SHORT).show() }
+                catch (e: CancellationException) { throw e }
+                catch (e: Exception) { Toast.makeText(this@EReaderActivity, "Gagal menyimpan: ${e.message}", Toast.LENGTH_LONG).show() }
+            }
+        }
     }
 
     override fun onDestroy() {

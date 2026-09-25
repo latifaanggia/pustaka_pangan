@@ -9,12 +9,15 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import com.google.android.material.card.MaterialCardView
 
 class KoleksiActivity : AppCompatActivity() {
 
-    private val prefs by lazy { getSharedPreferences("koleksi_prefs", MODE_PRIVATE) }
-    private val KEY_OFFLINE_VOL06 = "is_offline_vol06"
+    private var jobUnduhVol06: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,7 @@ class KoleksiActivity : AppCompatActivity() {
             return
         }
 
+        val majalahVol07 = MajalahRepository.getById(7)!!
         val majalahVol06 = MajalahRepository.getById(6)!!
         val majalahVol05 = MajalahRepository.getById(5)!!
 
@@ -51,24 +55,38 @@ class KoleksiActivity : AppCompatActivity() {
             startActivity(Intent(this, NotifikasiActivity::class.java))
         }
 
-        // MAJALAH VOL 06 (status dibaca dari SharedPreferences saat halaman dibuka)
+        // MAJALAH VOL 07
+        findViewById<MaterialCardView>(R.id.btnBacaVol07).setOnClickListener {
+            bukaEReader(majalahVol07.judul, majalahVol07.namaFilePdf, PdfDownloader.sudahDiunduh(this, majalahVol07.namaFilePdf))
+        }
+
+        // MAJALAH VOL 06
         val btnBacaVol06 = findViewById<MaterialCardView>(R.id.btnBacaVol06)
         val btnDownloadVol06 = findViewById<MaterialCardView>(R.id.btnDownloadVol06)
         val tvBacaVol06 = findViewById<TextView>(R.id.tvBacaVol06)
         val iconDownloadVol06 = findViewById<ImageView>(R.id.iconDownloadVol06)
-
-        if (prefs.getBoolean(KEY_OFFLINE_VOL06, false)) {
-            tampilkanVol06SudahDiunduh(btnBacaVol06, tvBacaVol06, iconDownloadVol06)
-        }
+        if (PdfDownloader.sudahDiunduh(this, majalahVol06.namaFilePdf)) tampilkanVol06SudahDiunduh(btnBacaVol06, tvBacaVol06, iconDownloadVol06)
 
         btnBacaVol06.setOnClickListener {
-            bukaEReader(majalahVol06.judul, majalahVol06.namaFilePdf, prefs.getBoolean(KEY_OFFLINE_VOL06, false))
+            if (jobUnduhVol06?.isActive == true) { Toast.makeText(this, "Tunggu unduhan selesai dulu ya", Toast.LENGTH_SHORT).show(); return@setOnClickListener }
+            bukaEReader(majalahVol06.judul, majalahVol06.namaFilePdf, PdfDownloader.sudahDiunduh(this, majalahVol06.namaFilePdf))
         }
 
         btnDownloadVol06.setOnClickListener {
-            prefs.edit().putBoolean(KEY_OFFLINE_VOL06, true).apply()
-            tampilkanVol06SudahDiunduh(btnBacaVol06, tvBacaVol06, iconDownloadVol06)
-            Toast.makeText(this, "Majalah berhasil diunduh!", Toast.LENGTH_SHORT).show()
+            when {
+                PdfDownloader.sudahDiunduh(this, majalahVol06.namaFilePdf) -> Toast.makeText(this, "Majalah sudah tersedia offline", Toast.LENGTH_SHORT).show()
+                jobUnduhVol06?.isActive == true -> Toast.makeText(this, "Sedang mengunduh...", Toast.LENGTH_SHORT).show()
+                else -> lifecycleScope.launch {
+                    btnDownloadVol06.alpha = 0.5f; tvBacaVol06.text = "0%"
+                    try {
+                        PdfDownloader.unduh(majalahVol06.namaFilePdf, PdfDownloader.fileOffline(this@KoleksiActivity, majalahVol06.namaFilePdf)) { tvBacaVol06.text = "$it%" }
+                        tampilkanVol06SudahDiunduh(btnBacaVol06, tvBacaVol06, iconDownloadVol06)
+                        Toast.makeText(this@KoleksiActivity, "Majalah berhasil diunduh!", Toast.LENGTH_SHORT).show()
+                    } catch (e: CancellationException) { throw e
+                    } catch (e: Exception) { Toast.makeText(this@KoleksiActivity, e.message ?: "Gagal mengunduh majalah", Toast.LENGTH_LONG).show()
+                    } finally { tvBacaVol06.text = "Baca"; btnDownloadVol06.alpha = 1f }
+                }.also { jobUnduhVol06 = it }
+            }
         }
 
         // MAJALAH VOL 05 (Kondisi Awal: Offline / Hijau)
@@ -96,7 +114,7 @@ class KoleksiActivity : AppCompatActivity() {
         val intent = Intent(this, EReaderActivity::class.java)
         intent.putExtra("JUDUL_MAJALAH", judulMajalah)
         intent.putExtra("NAMA_FILE_PDF", namaFilePdf)
-        intent.putExtra("IS_OFFLINE", isOffline) // ⬅️ Ini kunci pelemparan datanya
+        intent.putExtra("IS_OFFLINE", isOffline)
         startActivity(intent)
     }
 }
