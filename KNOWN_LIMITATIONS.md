@@ -19,16 +19,16 @@ Dokumen ini mencatat bagian-bagian dari Pustaka Pangan yang **masih simulasi/dum
 |---|---|---|
 | Sumber data majalah | `MajalahRepository` — daftar majalah hardcode di kode Kotlin (`listOf(...)`), bukan dari API/database | Ganti isi `MajalahRepository` untuk memanggil API/Supabase, tanpa perlu mengubah Activity pemanggilnya |
 | Cover & Pratinjau Editorial | Gambar cover disimpan sebagai resource `drawable` di dalam APK. Cuma **FRI Vol 07** yang punya aset pratinjau multi-halaman asli (`_hal2` s/d `_hal6`); majalah lain fallback menampilkan cover-nya saja sebagai satu halaman pratinjau | Cover & halaman pratinjau di-upload ke object storage (Supabase Storage/S3), field data berubah dari resource ID (`Int`) ke URL (`String`) |
-| File PDF | Nama file PDF di `MajalahRepository` (`namaFilePdf`) itu string biasa, **bukan** link ke file yang benar-benar ada — belum ada mekanisme upload/unduh PDF sungguhan | Sama seperti cover: dipindah ke object storage, field berubah jadi URL |
+| File PDF | PDF sudah di Supabase Storage (bucket `pdf-majalah`, dikompres ±52% pakai Ghostscript `/ebook`). Tapi bucket masih **public** — siapa pun yang tahu URL-nya bisa mengunduh majalah berbayar tanpa membeli. Katalog baru 8 edisi demo (free plan: 1 GB storage, 5 GB egress/bulan) | Bucket private + RLS di `storage.objects` yang cek tabel pembelian + *signed URL* berumur pendek; katalog penuh 2018–2026 (±1,5 GB) butuh Pro plan atau `url_pdf` diarahkan ke server pustakapangan.com |
 | Menambah majalah baru | Harus edit kode (`MajalahRepository.kt`) dan build ulang APK | Idealnya cukup lewat panel admin/CMS di sisi backend, tanpa update aplikasi |
 
 ## Fitur Unduh (Baca Offline)
 
-`KoleksiActivity` saat ini **tidak benar-benar mengunduh file apa pun**. Tombol "Unduh" cuma mengubah nilai boolean (`is_offline_vol06`) di `SharedPreferences` — status "sudah diunduh" itu murni tampilan, bukan file PDF yang tersimpan di penyimpanan HP.
-
-Sesuai arahan mentor project ini, implementasi sungguhan nanti perlu:
-- Menyimpan file PDF ke **local storage** (`context.filesDir`), bukan cache — supaya tidak terhapus otomatis oleh sistem saat penyimpanan HP penuh
-- Kemungkinan kompresi ukuran file di **sisi server** saat admin upload, bukan di sisi Android
+Sudah **benar-benar mengunduh** lewat `PdfDownloader` (stream per 64 KB, file `.tmp` lalu rename atomic, cek memori kosong, pesan error untuk offline/timeout/404). Baca online disimpan di **cache** (`cacheDir`), unduhan offline di **local storage** (`filesDir`) sesuai arahan mentor; status "sudah diunduh" dicek dari keberadaan file, bukan flag `SharedPreferences`. Batasan yang tersisa:
+- Unduhan terikat ke layar (`lifecycleScope`): keluar dari layar atau **rotasi layar** membatalkan unduhan dan harus diulang. Produksi: `WorkManager` (tetap jalan di background + notifikasi progres) dan resume unduhan dengan header HTTP `Range`
+- Layout Koleksi masih hardcode 3 item (Vol 07/06/05); tombol unduh Vol 07 belum punya ID. Produksi: `RecyclerView` dari data pembelian user
+- Belum ada fitur hapus unduhan / kelola penyimpanan
+- Kompresi dilakukan manual sekali di sisi admin sebelum upload, belum otomatis di pipeline upload
 
 ## Top Up & Pembayaran
 
