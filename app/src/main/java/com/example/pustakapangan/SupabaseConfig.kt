@@ -15,6 +15,9 @@ object SupabaseConfig {
     suspend fun postRest(path: String, bodyJson: String, accessToken: String): String =
         request("$PROJECT_URL/rest/v1/$path", "POST", bodyJson, accessToken)
 
+    suspend fun postRpc(fungsi: String, bodyJson: String, accessToken: String): String =
+        request("$PROJECT_URL/rest/v1/rpc/$fungsi", "POST", bodyJson, accessToken)
+
     suspend fun postAuth(path: String, bodyJson: String): String =
         request("$PROJECT_URL/auth/v1/$path", "POST", bodyJson, null)
 

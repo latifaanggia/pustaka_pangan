@@ -20,8 +20,7 @@ class TopUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_top_up)
 
-        val saldoUser = CustomerRepository.getUserAktif(this)?.saldo ?: 0
-        findViewById<TextView>(R.id.tvSaldoTopUp).text = "Rp${"%,d".format(saldoUser).replace(',', '.')}"
+        tampilkanSaldo(CustomerRepository.getUserAktif(this)?.saldo ?: 0)
 
         // Tombol Kembali
         val btnBack = findViewById<ImageView>(R.id.btnBack)
@@ -115,7 +114,10 @@ class TopUpActivity : AppCompatActivity() {
 
             val user = CustomerRepository.getUserAktif(this)
             if (user == null) {
-                android.widget.Toast.makeText(this, "Sesi login habis, silakan masuk lagi.", android.widget.Toast.LENGTH_LONG).show()
+                android.widget.Toast.makeText(
+                    this,
+                    "Sesi login habis, silakan masuk lagi.",
+                    android.widget.Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
@@ -123,15 +125,49 @@ class TopUpActivity : AppCompatActivity() {
             btnProsesTopUp.text = "Memproses..."
             lifecycleScope.launch {
                 try {
-                    TopUpRepository.tambahRiwayat(user.accessToken, user.id, nominalInt, namaMetode)
-                    val tujuan = if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java else KonfirmasiQrisActivity::class.java
-                    startActivity(Intent(this@TopUpActivity, tujuan).apply { putExtra("NOMINAL_TOPUP", "Rp${"%,d".format(nominalInt).replace(',', '.')}") })
-                } catch (e: Exception) {
-                    android.widget.Toast.makeText(this@TopUpActivity, "Gagal top up: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                    TopUpRepository.tambahRiwayat(
+                        CustomerRepository.getTokenValid(this@TopUpActivity),
+                        user.id,
+                        nominalInt, namaMetode)
+                    android.widget.Toast.makeText(
+                        this@TopUpActivity,
+                        "Saldo akan bertambah setelah pembayaran dikonfirmasi admin",
+                        android.widget.Toast.LENGTH_LONG).show()
+
+                    val tujuan =
+                        if (metodeTerpilih == "BCA") KonfirmasiBankActivity::class.java
+                        else KonfirmasiQrisActivity::class.java
+
+                    startActivity(Intent(
+                        this@TopUpActivity,
+                        tujuan).apply { putExtra("NOMINAL_TOPUP",
+                        "Rp${"%,d".format(nominalInt).replace(',', '.')}") })
+
+                }
+                catch (e: Exception) {
+                    android.widget.Toast.makeText(
+                        this@TopUpActivity,
+                        "Gagal top up: ${e.message}",
+                        android.widget.Toast.LENGTH_LONG).show()
+
                     btnProsesTopUp.isEnabled = true
                     btnProsesTopUp.text = "Top Up Sekarang"
                 }
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            try { tampilkanSaldo(CustomerRepository.refreshSaldo(this@TopUpActivity)) }
+            catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            }
+            catch (e: Exception) { } }
+    }
+
+    private fun tampilkanSaldo(saldo: Int) {
+        findViewById<TextView>(R.id.tvSaldoTopUp).text =
+            "Rp${"%,d".format(saldo).replace(',', '.')}" }
 }

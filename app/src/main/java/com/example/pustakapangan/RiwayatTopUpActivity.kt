@@ -32,15 +32,23 @@ class RiwayatTopUpActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         if (user == null) {
-            Toast.makeText(this, "Sesi login habis, silakan masuk lagi.", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                "Sesi login habis, silakan masuk lagi.",
+                Toast.LENGTH_LONG).show()
             finish()
             return
         }
 
         lifecycleScope.launch {
             try {
-                val daftarRiwayat = TopUpRepository.getRiwayatByCustomer(user.accessToken, user.id)
-                recyclerView.adapter = RiwayatTopUpAdapter(daftarRiwayat) { pesanWa -> bukaWhatsApp(pesanWa) }
+                val daftarRiwayat = TopUpRepository.getRiwayatByCustomer(
+                    CustomerRepository.getTokenValid(
+                    this@RiwayatTopUpActivity),
+                    user.id)
+                recyclerView.adapter = RiwayatTopUpAdapter(daftarRiwayat) {
+                    pesanWa -> bukaWhatsApp(pesanWa)
+                }
             } catch (e: Exception) {
                 Toast.makeText(this@RiwayatTopUpActivity, "Gagal memuat riwayat: ${e.message}", Toast.LENGTH_LONG).show()
             }
@@ -54,7 +62,10 @@ class RiwayatTopUpActivity : AppCompatActivity() {
             val url = "https://api.whatsapp.com/send?phone=$nomorAdmin&text=$encodedPesan"
             startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) })
         } catch (e: Exception) {
-            Toast.makeText(this, "Aplikasi WhatsApp tidak ditemukan", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Aplikasi WhatsApp tidak ditemukan",
+                Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -8,6 +8,9 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 import com.google.android.material.card.MaterialCardView
 
 class AkunActivity : AppCompatActivity() {
@@ -28,8 +31,7 @@ class AkunActivity : AppCompatActivity() {
         if (user != null) {
             findViewById<TextView>(R.id.tvNamaUser).text = "${user.namaDepan} ${user.namaBelakang}".trim()
             findViewById<TextView>(R.id.tvInisialAvatar).text = user.inisial()
-            val saldoFormat = java.text.NumberFormat.getNumberInstance(java.util.Locale("in", "ID")).format(user.saldo)
-            findViewById<TextView>(R.id.tvSaldo).text = "Rp $saldoFormat"
+            tampilkanSaldo(user.saldo)
         }
 
         // Menu Ubah Password
@@ -112,6 +114,11 @@ class AkunActivity : AppCompatActivity() {
         if (SessionManager.isLoggedIn(this)) {
             findViewById<android.view.View>(R.id.dotNotifBell).visibility =
                 if (NotifikasiState.adaNotifBelumDibaca(this)) android.view.View.VISIBLE else android.view.View.GONE
+            lifecycleScope.launch { try { tampilkanSaldo(CustomerRepository.refreshSaldo(this@AkunActivity)) } catch (e: CancellationException) { throw e } catch (e: Exception) { } }
         }
+    }
+
+    private fun tampilkanSaldo(saldo: Int) {
+        findViewById<TextView>(R.id.tvSaldo).text = "Rp ${java.text.NumberFormat.getNumberInstance(java.util.Locale("in", "ID")).format(saldo)}"
     }
 }

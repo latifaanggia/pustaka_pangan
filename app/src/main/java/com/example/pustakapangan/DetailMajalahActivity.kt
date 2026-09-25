@@ -7,11 +7,15 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class DetailMajalahActivity : AppCompatActivity() {
     private var halamanSaatIni = 1
@@ -46,6 +50,17 @@ class DetailMajalahActivity : AppCompatActivity() {
         tampilkanDataMajalah()
         setupPratinjauEditorial()
         setupTombolAksi()
+        cekStatusPembelian()
+    }
+
+    private fun cekStatusPembelian() {
+        if (!SessionManager.isLoggedIn(this)) return
+        lifecycleScope.launch {
+            try { if (PembelianRepository.sudahDibeli(this@DetailMajalahActivity, majalah.id)) aturStatusPembelian(true) }
+            catch (e: CancellationException) { throw e }
+            catch (e: Exception) {
+            }
+        }
     }
 
     private fun tampilkanDataMajalah() {
@@ -119,16 +134,45 @@ class DetailMajalahActivity : AppCompatActivity() {
         view.findViewById<TextView>(R.id.tvHargaSheet).text = "Rp${formatRupiah(majalah.harga)}"
         view.findViewById<TextView>(R.id.tvHargaPotong).text = "- Rp${formatRupiah(majalah.harga)}"
 
-        val saldoUser = CustomerRepository.getUserAktif(this)?.saldo ?: 0
-        val sisaSaldo = saldoUser - majalah.harga
-        view.findViewById<TextView>(R.id.tvSaldoSaatIni).text = "Rp${formatRupiah(saldoUser)}"
-        view.findViewById<TextView>(R.id.tvSisaSaldo).text = "Rp${formatRupiah(sisaSaldo)}"
+        val tvSaldoSaatIni = view.findViewById<TextView>(R.id.tvSaldoSaatIni)
+        val tvSisaSaldo = view.findViewById<TextView>(R.id.tvSisaSaldo)
+        val btnKonfirmasiBeli = view.findViewById<MaterialButton>(R.id.btnKonfirmasiBeli)
+        val teksTombolAwal = btnKonfirmasiBeli.text
+        var saldoCukup = true
+        // Tampilkan saldo; saldo < harga -> tombol berubah jadi "Top Up Saldo"
+        fun tampilkanSaldo(saldo: Int) {
+            val sisa = saldo - majalah.harga; saldoCukup = sisa >= 0
+            tvSaldoSaatIni.text = "Rp${formatRupiah(saldo)}"
+            tvSisaSaldo.text = if (saldoCukup) "Rp${formatRupiah(sisa)}" else "-Rp${formatRupiah(-sisa)}"
+            tvSisaSaldo.setTextColor(Color.parseColor(if (saldoCukup) "#1E1E1E" else "#DC2626"))
+            if (btnKonfirmasiBeli.isEnabled) btnKonfirmasiBeli.text = if (saldoCukup) teksTombolAwal else "Saldo Kurang, Top Up Dulu"
+        }
+        tampilkanSaldo(CustomerRepository.getUserAktif(this)?.saldo ?: 0) // tampil instan dari data lokal...
+        lifecycleScope.launch {
+            try { tampilkanSaldo(CustomerRepository.refreshSaldo(this@DetailMajalahActivity)) } catch (e: CancellationException) { throw e } catch (e: Exception) { }
+        }
 
         view.findViewById<ImageView>(R.id.btnCloseSheet).setOnClickListener { sheet.dismiss() }
 
-        view.findViewById<MaterialButton>(R.id.btnKonfirmasiBeli).setOnClickListener {
-            sheet.dismiss()
-            tampilkanPembelianBerhasil()
+        btnKonfirmasiBeli.setOnClickListener {
+            if (!saldoCukup) { sheet.dismiss(); startActivity(Intent(this, TopUpActivity::class.java)); return@setOnClickListener }
+            btnKonfirmasiBeli.isEnabled = false; btnKonfirmasiBeli.text = "Memproses..."
+            lifecycleScope.launch {
+                try {
+                    PembelianRepository.beli(this@DetailMajalahActivity, majalah.id)
+                    sheet.dismiss(); tampilkanPembelianBerhasil()
+                } catch (e: CancellationException) { throw e
+                } catch (e: Exception) {
+                    val pesan = e.message ?: "Gagal memproses pembelian"
+                    Toast.makeText(this@DetailMajalahActivity, pesan, Toast.LENGTH_LONG).show()
+                    when {
+                        pesan.contains("sudah kamu beli") -> { sheet.dismiss(); aturStatusPembelian(true) }
+                        pesan.contains("Sesi berakhir") -> { sheet.dismiss(); startActivity(Intent(this@DetailMajalahActivity, SignInActivity::class.java)) }
+                        else -> { btnKonfirmasiBeli.isEnabled = true; btnKonfirmasiBeli.text = teksTombolAwal
+                            if (pesan.contains("Saldo tidak cukup")) try { tampilkanSaldo(CustomerRepository.refreshSaldo(this@DetailMajalahActivity)) } catch (e2: Exception) { } }
+                    }
+                }
+            }
         }
 
         sheet.show()
