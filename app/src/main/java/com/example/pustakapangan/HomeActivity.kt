@@ -136,7 +136,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        findViewById<View>(R.id.dotNotifBell).visibility = if (NotifikasiState.adaNotifBelumDibaca(this)) View.VISIBLE else View.GONE
+        NotifikasiRepository.perbaruiBadge(this, findViewById(R.id.dotNotifBell))
     }
 
     class HeroAdapter(private val items: List<BannerItem>) : RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {

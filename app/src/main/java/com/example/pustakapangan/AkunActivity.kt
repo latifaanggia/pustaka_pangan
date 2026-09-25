@@ -112,8 +112,7 @@ class AkunActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (SessionManager.isLoggedIn(this)) {
-            findViewById<android.view.View>(R.id.dotNotifBell).visibility =
-                if (NotifikasiState.adaNotifBelumDibaca(this)) android.view.View.VISIBLE else android.view.View.GONE
+            NotifikasiRepository.perbaruiBadge(this, findViewById(R.id.dotNotifBell))
             lifecycleScope.launch { try { tampilkanSaldo(CustomerRepository.refreshSaldo(this@AkunActivity)) } catch (e: CancellationException) { throw e } catch (e: Exception) { } }
         }
     }
