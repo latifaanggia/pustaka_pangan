@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 class DetailMajalahActivity : AppCompatActivity() {
     private var halamanSaatIni = 1
     private lateinit var majalah: Majalah
-    private var daftarGambarLokal: List<Int> = emptyList()
-    private val pakaiPratinjauLokal get() = daftarGambarLokal.isNotEmpty()
-    private val totalHalaman get() = if (pakaiPratinjauLokal) daftarGambarLokal.size else 1
+    private val totalHalaman get() =
+        if (majalah.tersedia && majalah.jumlahPratinjau > 0) majalah.jumlahPratinjau
+        else 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,15 +37,6 @@ class DetailMajalahActivity : AppCompatActivity() {
 
         val majalahId = intent.getIntExtra("MAJALAH_ID", 7)
         majalah = MajalahRepository.getById(majalahId) ?: MajalahRepository.getSemuaMajalah().first()
-
-        daftarGambarLokal = if (majalah.id == 7) {
-            listOf(
-                R.drawable.img_2026_vol_07, R.drawable.img_2026_vol_07_hal2, R.drawable.img_2026_vol_07_hal3,
-                R.drawable.img_2026_vol_07_hal4, R.drawable.img_2026_vol_07_hal5, R.drawable.img_2026_vol_07_hal6
-            )
-        } else {
-            emptyList()
-        }
 
         tampilkanDataMajalah()
         setupPratinjauEditorial()
@@ -73,11 +64,14 @@ class DetailMajalahActivity : AppCompatActivity() {
 
     private fun tampilkanHalamanPratinjau(halaman: Int) {
         val imgPratinjau = findViewById<ImageView>(R.id.imgPratinjau)
-        if (pakaiPratinjauLokal) {
-            imgPratinjau.setImageResource(daftarGambarLokal[halaman - 1])
-        } else {
-            Glide.with(this).load(majalah.urlCover).into(imgPratinjau)
+        if (totalHalaman == 1) {
+            Glide.with(this).load(majalah.urlCover).into(imgPratinjau);
+            return
         }
+
+        // Gagal muat (offline/gambar belum ada) -> tampilkan cover sebagai cadangan
+        Glide.with(this).load(majalah.urlPratinjau(halaman)).error(Glide.with(this).load(majalah.urlCover)).into(imgPratinjau)
+        if (halaman < totalHalaman) Glide.with(this).load(majalah.urlPratinjau(halaman + 1)).preload()
     }
 
     private fun formatRupiah(angka: Int): String =

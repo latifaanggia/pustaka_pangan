@@ -13,8 +13,11 @@ data class Majalah(
     val namaFilePdf: String, // kosong = baru ada cover, versi digital (PDF) belum tersedia
     val daftarIsi: String,
     val edisi: Int = 0,
-    val jumlahPembeli: Int = 0 // dasar urutan section "Populer"
+    val jumlahPembeli: Int = 0, // dasar urutan section "Populer"
+    val jumlahPratinjau: Int = 0 // jumlah gambar Pratinjau Editorial di bucket pratinjau-majalah (0 = pakai cover)
 ) {
+    // 2026_vol_07.pdf -> .../pratinjau-majalah/2026_vol_07_hal3.jpg
+    fun urlPratinjau(halaman: Int) = "${SupabaseConfig.PROJECT_URL}/storage/v1/object/public/pratinjau-majalah/${namaFilePdf.removeSuffix(".pdf")}_hal$halaman.jpg"
     val tersedia get() = namaFilePdf.isNotBlank()
     val gratis get() = harga == 0 // majalah gratis (Kulinologi, Food For Kids)
 }
@@ -57,7 +60,8 @@ object MajalahRepository {
                         else obj.getString("url_pdf"),
                     daftarIsi = obj.optString("daftar_isi"),
                     edisi = obj.optInt("edisi"),
-                    jumlahPembeli = obj.optInt("jumlah_pembeli")
+                    jumlahPembeli = obj.optInt("jumlah_pembeli"),
+                    jumlahPratinjau = obj.optInt("jumlah_pratinjau")
                 )
             }
         }
