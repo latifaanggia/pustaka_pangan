@@ -425,9 +425,10 @@
             </LinearLayout>
 
             <!-- ========================================= -->
-            <!-- SECTION: POPULER                          -->
+            <!-- SECTION: POPULER (pembeli terbanyak, dari MajalahRepository.getPopuler) -->
             <!-- ========================================= -->
             <TextView
+                android:id="@+id/tvLabelPopuler"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Populer"
@@ -438,83 +439,21 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="12dp" />
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPopuler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
                 android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:paddingBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Sampul Populer 1 (Tanpa Teks Bawah) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/img_2026_vol_07"
-                            android:scaleType="centerCrop" />
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Sampul Populer 2 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/img_2026_vol_06"
-                            android:scaleType="centerCrop" />
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Sampul Populer 3 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/img_2026_vol_05"
-                            android:scaleType="centerCrop" />
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:paddingBottom="16dp" />
 
             <!-- ========================================= -->
-            <!-- SECTION: GRATIS                           -->
+            <!-- SECTION: GRATIS (harga 0, dari MajalahRepository.getGratis) -->
             <!-- ========================================= -->
             <TextView
+                android:id="@+id/tvLabelGratis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gratis"
@@ -525,246 +464,15 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="12dp" />
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvGratis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
                 android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:paddingBottom="24dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Sampul Gratis 1 (Dengan Label FREE) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <!-- FrameLayout agar tulisan FREE bisa menumpuk di atas gambar -->
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_free_1"
-                                android:scaleType="centerCrop" />
-
-                            <!-- Label FREE -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FREE"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp"
-                                android:fontFamily="@font/inter_semibold"
-                                android:background="#00AA5B"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="4dp" />
-                        </FrameLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Sampul Gratis 2 (Dengan Label FREE) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_free_2"
-                                android:scaleType="centerCrop" />
-
-                            <!-- Label FREE -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FREE"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp"
-                                android:fontFamily="@font/inter_semibold"
-                                android:background="#00AA5B"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="4dp" />
-                        </FrameLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Sampul Gratis 3 (Dengan Label FREE) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_free_3"
-                                android:scaleType="centerCrop" />
-
-                            <!-- Label FREE -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FREE"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp"
-                                android:fontFamily="@font/inter_semibold"
-                                android:background="#00AA5B"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="4dp" />
-                        </FrameLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Sampul Gratis 4 (Dengan Label FREE) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_free_4"
-                                android:scaleType="centerCrop" />
-
-                            <!-- Label FREE -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FREE"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp"
-                                android:fontFamily="@font/inter_semibold"
-                                android:background="#00AA5B"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="4dp" />
-                        </FrameLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Sampul Gratis 5 (Dengan Label FREE) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_free_5"
-                                android:scaleType="centerCrop" />
-
-                            <!-- Label FREE -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FREE"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp"
-                                android:fontFamily="@font/inter_semibold"
-                                android:background="#00AA5B"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="4dp" />
-                        </FrameLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Sampul Gratis 6 (Dengan Label FREE) -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="140dp"
-                        android:layout_height="190dp"
-                        android:layout_marginEnd="16dp"
-                        app:cardCornerRadius="8dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DFDFDF"
-                        app:cardElevation="4dp"
-                        android:outlineAmbientShadowColor="#14000000"
-                        android:outlineSpotShadowColor="#14000000">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/img_free_6"
-                                android:scaleType="centerCrop" />
-
-                            <!-- Label FREE -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FREE"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp"
-                                android:fontFamily="@font/inter_semibold"
-                                android:background="#00AA5B"
-                                android:paddingHorizontal="12dp"
-                                android:paddingVertical="4dp" />
-                        </FrameLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:paddingBottom="24dp" />
 
         </LinearLayout>
     </ScrollView>

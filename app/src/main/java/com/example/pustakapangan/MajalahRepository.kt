@@ -10,9 +10,14 @@ data class Majalah(
     val tahun: Int,
     val harga: Int,
     val urlCover: String,
-    val namaFilePdf: String,
-    val daftarIsi: String
-)
+    val namaFilePdf: String, // kosong = baru ada cover, versi digital (PDF) belum tersedia
+    val daftarIsi: String,
+    val edisi: Int = 0,
+    val jumlahPembeli: Int = 0 // dasar urutan section "Populer"
+) {
+    val tersedia get() = namaFilePdf.isNotBlank()
+    val gratis get() = harga == 0 // majalah gratis (Kulinologi, Food For Kids)
+}
 
 object MajalahRepository {
     private var daftarMajalah: List<Majalah> = emptyList()
@@ -47,8 +52,12 @@ object MajalahRepository {
                     tahun = obj.optInt("tahun"),
                     harga = obj.getInt("harga"),
                     urlCover = obj.optString("url_cover"),
-                    namaFilePdf = obj.optString("url_pdf"),
-                    daftarIsi = obj.optString("daftar_isi")
+                    namaFilePdf =
+                        if (obj.isNull("url_pdf")) ""
+                        else obj.getString("url_pdf"),
+                    daftarIsi = obj.optString("daftar_isi"),
+                    edisi = obj.optInt("edisi"),
+                    jumlahPembeli = obj.optInt("jumlah_pembeli")
                 )
             }
         }
@@ -61,14 +70,27 @@ object MajalahRepository {
 
     fun getSemuaMajalah(): List<Majalah> = daftarMajalah
 
-    fun getByTahun(tahun: Int): List<Majalah> = daftarMajalah.filter {
-        it.tahun == tahun
-    }
+    // Urutan standar katalog: tahun terbaru dulu, lalu edisi terbesar (Vol 08 sebelum Vol 07, dst)
+    private val urutanTerbaru = compareByDescending<Majalah> { it.tahun }.thenByDescending { it.edisi }
 
-    fun getTerbaru(jumlah: Int = 3): List<Majalah> =
-        daftarMajalah.sortedWith(compareByDescending<Majalah> {
-            it.tahun
-        }.thenByDescending { it.id }).take(jumlah)
+    fun getByTahun(tahun: Int): List<Majalah> = daftarMajalah.filter { it.tahun == tahun }.sortedWith(urutanTerbaru)
+
+    fun getDaftarTahun(): List<Int> = daftarMajalah.map { it.tahun }.distinct().sortedDescending()
+
+    // Banner/Terbaru/Populer
+    private fun bisaDibeli() = daftarMajalah.filter { it.tersedia && !it.gratis }
+
+    fun getTerbaru(jumlah: Int = 3): List<Majalah> = bisaDibeli().sortedWith(urutanTerbaru).take(jumlah)
+
+    // Pembeli terbanyak dulu; kalau jumlahnya sama (misal sama-sama 0), yang terbaru dulu
+    fun getPopuler(jumlah: Int = 5): List<Majalah> =
+        bisaDibeli().sortedWith(compareByDescending<Majalah> {
+            it.jumlahPembeli
+        }.then(urutanTerbaru)).take(jumlah)
+
+    fun getGratis(): List<Majalah> = daftarMajalah.filter {
+        it.tersedia && it.gratis
+    }.sortedWith(urutanTerbaru)
 
     fun getById(id: Int): Majalah? = daftarMajalah.find {
         it.id == id

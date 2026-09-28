@@ -12,6 +12,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -51,6 +52,10 @@ class HomeActivity : AppCompatActivity() {
         findViewById<MaterialCardView>(R.id.cardMajalahTerbaru2).setOnClickListener {
             startActivity(Intent(this, DetailMajalahActivity::class.java).apply { putExtra("MAJALAH_ID", majalahTerbaru2.id) })
         }
+
+        // Populer & Gratis dari database (sebelumnya gambar statis yang gak bisa dipencet)
+        isiSectionSampul(R.id.rvPopuler, R.id.tvLabelPopuler, MajalahRepository.getPopuler())
+        isiSectionSampul(R.id.rvGratis, R.id.tvLabelGratis, MajalahRepository.getGratis())
 
         findViewById<TextView>(R.id.tvLihatSemua).setOnClickListener {
             startActivity(Intent(this, MajalahActivity::class.java))
@@ -132,6 +137,33 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    // Section kosong (misal majalah gratis belum di-upload) disembunyikan beserta judulnya
+    private fun isiSectionSampul(rvId: Int, labelId: Int, daftar: List<Majalah>) {
+        listOf(findViewById<View>(rvId), findViewById<View>(labelId)).forEach { it.visibility = if (daftar.isEmpty()) View.GONE else View.VISIBLE }
+        findViewById<RecyclerView>(rvId).apply {
+            layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = SampulAdapter(daftar) { id -> startActivity(Intent(this@HomeActivity, DetailMajalahActivity::class.java).apply { putExtra("MAJALAH_ID", id) }) }
+        }
+    }
+
+    class SampulAdapter(private val items: List<Majalah>, private val onKlik: (Int) -> Unit) : RecyclerView.Adapter<SampulAdapter.VH>() {
+        class VH(v: View) : RecyclerView.ViewHolder(v) {
+            val img: ImageView = v.findViewById(R.id.imgSampul);
+            val free: TextView = v.findViewById(R.id.tvLabelFree)
+        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            VH(LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_home_sampul, parent, false)
+            )
+        override fun getItemCount() = items.size
+        override fun onBindViewHolder(h: VH, position: Int) {
+            val m = items[position]
+            Glide.with(h.itemView).load(m.urlCover).into(h.img);
+            h.free.visibility = if (m.gratis) View.VISIBLE else View.GONE
+            h.itemView.setOnClickListener { onKlik(m.id) }
+        }
     }
 
     override fun onResume() {

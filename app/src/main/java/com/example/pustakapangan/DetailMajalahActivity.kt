@@ -66,7 +66,7 @@ class DetailMajalahActivity : AppCompatActivity() {
     private fun tampilkanDataMajalah() {
         Glide.with(this).load(majalah.urlCover).into(findViewById<ImageView>(R.id.imgCover))
         findViewById<TextView>(R.id.tvJudulMajalah).text = majalah.judul
-        findViewById<TextView>(R.id.tvHarga).text = "Rp ${formatRupiah(majalah.harga)}"
+        findViewById<TextView>(R.id.tvHarga).text = if (majalah.gratis) "Gratis" else "Rp ${formatRupiah(majalah.harga)}"
         tampilkanHalamanPratinjau(1)
         findViewById<TextView>(R.id.tvHalamanPratinjau).text = "1 / $totalHalaman"
     }
@@ -113,6 +113,15 @@ class DetailMajalahActivity : AppCompatActivity() {
         btnBack.setOnClickListener {
             finish()
         }
+
+        // Versi digital belum ada
+        if (!majalah.tersedia) {
+            btnAction.text = "Segera Tersedia"; btnAction.isEnabled = false
+            btnAction.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#9CA3AF"))
+            return
+        }
+        // Majalah gratis: tanpa bottom sheet pembayaran
+        if (majalah.gratis) { btnAction.text = "Baca Gratis"; btnAction.setOnClickListener { ambilGratis() }; return }
 
         btnAction.setOnClickListener {
             if (SessionManager.isLoggedIn(this)) {
@@ -196,6 +205,26 @@ class DetailMajalahActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    // Login: "diambil" lewat beli_majalah (harga 0, saldo tetap) supaya masuk Koleksi & bisa diunduh offline.
+    // Tamu: tetap boleh langsung baca online.
+    private fun ambilGratis() {
+        if (!SessionManager.isLoggedIn(this)) {
+            bukaEReader();
+            return
+        }
+        val btnAction = findViewById<MaterialButton>(R.id.btnAction).apply {
+            isEnabled = false
+        }
+        lifecycleScope.launch {
+            try {
+                PembelianRepository.beli(this@DetailMajalahActivity, majalah.id);
+                Toast.makeText(this@DetailMajalahActivity, "Ditambahkan ke Koleksi", Toast.LENGTH_SHORT).show()
+            }
+            catch (e: CancellationException) { throw e } catch (e: Exception) { /* sudah pernah diambil / offline: tetap bisa dibaca */ }
+            btnAction.isEnabled = true; aturStatusPembelian(true); bukaEReader()
+        }
     }
 
     private fun bukaEReader() {

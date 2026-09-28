@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.graphics.Typeface
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -24,34 +26,7 @@ class MajalahActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_majalah)
 
-        // Chip tahun
-        val mainScrollView = findViewById<ScrollView>(R.id.mainScrollView)
-        val chip2026 = findViewById<MaterialCardView>(R.id.chip2026)
-        val tvChip2026 = findViewById<TextView>(R.id.tvChip2026)
-        val section2026 = findViewById<TextView>(R.id.section2026)
-        val chip2025 = findViewById<MaterialCardView>(R.id.chip2025)
-        val tvChip2025 = findViewById<TextView>(R.id.tvChip2025)
-        val section2025 = findViewById<TextView>(R.id.section2025)
-
-        fun ubahChipAktif(aktifCard: MaterialCardView, aktifText: TextView, pasifCard: MaterialCardView, pasifText: TextView) {
-            aktifCard.setCardBackgroundColor(Color.parseColor("#D32F2F"))
-            aktifCard.strokeWidth = 0
-            aktifText.setTextColor(Color.parseColor("#FFFFFF"))
-
-            pasifCard.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
-            pasifCard.strokeColor = Color.parseColor("#E5E7EB")
-            pasifCard.strokeWidth = (1 * resources.displayMetrics.density).toInt()
-            pasifText.setTextColor(Color.parseColor("#6B7280"))
-        }
-
-        chip2026.setOnClickListener {
-            ubahChipAktif(chip2026, tvChip2026, chip2025, tvChip2025)
-            mainScrollView.post { mainScrollView.smoothScrollTo(0, section2026.top) }
-        }
-        chip2025.setOnClickListener {
-            ubahChipAktif(chip2025, tvChip2025, chip2026, tvChip2026)
-            mainScrollView.post { mainScrollView.smoothScrollTo(0, section2025.top - 20) }
-        }
+        setupKatalogPerTahun()
 
         // Hero
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerHero)
@@ -85,15 +60,6 @@ class MajalahActivity : AppCompatActivity() {
             }
         })
 
-        findViewById<RecyclerView>(R.id.recyclerView2026).apply {
-            layoutManager = LinearLayoutManager(this@MajalahActivity, LinearLayoutManager.HORIZONTAL, false)
-            adapter = MajalahGridAdapter(MajalahRepository.getByTahun(2026)) { majalahId -> bukaDetailMajalah(majalahId) }
-        }
-        findViewById<RecyclerView>(R.id.recyclerView2025).apply {
-            layoutManager = LinearLayoutManager(this@MajalahActivity, LinearLayoutManager.HORIZONTAL, false)
-            adapter = MajalahGridAdapter(MajalahRepository.getByTahun(2025)) { majalahId -> bukaDetailMajalah(majalahId) }
-        }
-
         // Navbar
         val navBeranda = findViewById<RelativeLayout>(R.id.navBeranda)
         navBeranda.setOnClickListener {
@@ -121,6 +87,33 @@ class MajalahActivity : AppCompatActivity() {
             val intent = Intent(this, NotifikasiActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun setupKatalogPerTahun() {
+        val scroll = findViewById<ScrollView>(R.id.mainScrollView)
+        val layoutChip = findViewById<LinearLayout>(R.id.layoutChipTahun); val layoutSection = findViewById<LinearLayout>(R.id.layoutSectionTahun)
+        val chips = mutableListOf<Pair<MaterialCardView, TextView>>()
+        fun aktifkanChip(index: Int) = chips.forEachIndexed { i, (card, tv) ->
+            val aktif = i == index
+            card.setCardBackgroundColor(Color.parseColor(if (aktif) "#D32F2F" else "#FFFFFF"))
+            card.strokeWidth = if (aktif) 0 else (1 * resources.displayMetrics.density).toInt(); card.strokeColor = Color.parseColor("#E5E7EB")
+            tv.setTextColor(Color.parseColor(if (aktif) "#FFFFFF" else "#6B7280")); tv.setTypeface(null, if (aktif) Typeface.BOLD else Typeface.NORMAL)
+        }
+        MajalahRepository.getDaftarTahun().forEachIndexed { index, tahun ->
+            val section = layoutInflater.inflate(R.layout.item_majalah_tahun, layoutSection, false)
+            section.findViewById<TextView>(R.id.tvSectionTahun).text = "Tahun $tahun"
+            section.findViewById<RecyclerView>(R.id.rvSectionTahun).apply {
+                layoutManager = LinearLayoutManager(this@MajalahActivity, LinearLayoutManager.HORIZONTAL, false)
+                adapter = MajalahGridAdapter(MajalahRepository.getByTahun(tahun)) { majalahId -> bukaDetailMajalah(majalahId) }
+            }
+            layoutSection.addView(section)
+            val chip = layoutInflater.inflate(R.layout.item_chip_tahun, layoutChip, false) as MaterialCardView
+            val tvChip = chip.findViewById<TextView>(R.id.tvChipTahun).apply { text = tahun.toString() }
+            chips.add(chip to tvChip); layoutChip.addView(chip)
+            // top section dihitung relatif ke ScrollView: posisi container + posisi section di dalamnya
+            chip.setOnClickListener { aktifkanChip(index); scroll.post { scroll.smoothScrollTo(0, layoutSection.top + section.top - 20) } }
+        }
+        aktifkanChip(0)
     }
 
     override fun onResume() {
@@ -182,7 +175,9 @@ class MajalahActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: GridViewHolder, position: Int) {
             val majalah = items[position]
             Glide.with(holder.itemView).load(majalah.urlCover).into(holder.imgCover)
-            holder.tvHarga.text = "Rp${"%,d".format(majalah.harga).replace(',', '.')}"
+            // Label: belum ada PDF = "Segera Hadir" (abu-abu), harga 0 = "Gratis", selain itu harga
+            holder.tvHarga.text = when { !majalah.tersedia -> "Segera Hadir"; majalah.gratis -> "Gratis"; else -> "Rp${"%,d".format(majalah.harga).replace(',', '.')}" }
+            holder.tvHarga.setBackgroundColor(Color.parseColor(if (majalah.tersedia) "#00A859" else "#6B7280"))
             holder.itemView.setOnClickListener { onItemClick(majalah.id) }
         }
 

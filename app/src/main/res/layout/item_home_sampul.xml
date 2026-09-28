@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sampul di Beranda (section Populer & Gratis). Label FREE hanya tampil untuk majalah gratis -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="140dp"
+    android:layout_height="190dp"
+    android:layout_marginEnd="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:outlineAmbientShadowColor="#14000000"
+    android:outlineSpotShadowColor="#14000000"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:strokeColor="#DFDFDF"
+    app:strokeWidth="1dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imgSampul"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E5E7EB"
+            android:scaleType="centerCrop" />
+        <TextView
+            android:id="@+id/tvLabelFree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00AA5B"
+            android:fontFamily="@font/inter_semibold"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:text="FREE"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="gone" />
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -108,11 +108,11 @@ class KoleksiActivity : AppCompatActivity() {
             };
             adapters.clear()
             dibeli.groupBy { it.tahun }.toSortedMap(reverseOrder()).forEach {
-                (tahun, daftar) ->
+                    (tahun, daftar) ->
                 val section = layoutInflater.inflate(R.layout.item_koleksi_tahun, container, false)
                 section.findViewById<TextView>(R.id.tvTahunKoleksi).text = "Tahun $tahun"
                 val adapter = KoleksiAdapter(daftar.sortedByDescending {
-                    it.id
+                    it.edisi
                 }).also {
                     adapters.add(it)
                 }
@@ -140,9 +140,9 @@ class KoleksiActivity : AppCompatActivity() {
     // Kartu "Terakhir Dibaca"
     private fun tampilkanTerakhirDibaca(dibeli: List<Majalah>) {
         val majalah = RiwayatBaca.terakhir(this)?.let {
-            file -> dibeli.find {
-                it.namaFilePdf == file
-            }
+                file -> dibeli.find {
+            it.namaFilePdf == file
+        }
         }
         val card = findViewById<MaterialCardView>(R.id.cardTerakhirDibaca)
         listOf(card, findViewById<View>(R.id.tvLabelTerakhirDibaca)).forEach {
@@ -262,7 +262,7 @@ class KoleksiActivity : AppCompatActivity() {
                 if (PdfDownloader.sudahDiunduh(
                         this@KoleksiActivity,
                         m.namaFilePdf)
-                    )
+                )
                     hapusUnduhan(m)
                 else unduh(m)
             }

@@ -87,71 +87,12 @@
                 android:clipToPadding="false"
                 android:paddingHorizontal="24dp">
 
+                <!-- Chip per tahun diisi dari MajalahActivity (item_chip_tahun.xml), sesuai tahun yang ada di database -->
                 <LinearLayout
+                    android:id="@+id/layoutChipTahun"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Chip 2026  -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/chip2026"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="#D32F2F"
-                        app:cardCornerRadius="16dp"
-                        app:strokeWidth="0dp"
-                        android:layout_marginEnd="8dp">
-                        <TextView
-                            android:id="@+id/tvChip2026"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2026"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:paddingHorizontal="16dp"
-                            android:paddingVertical="6dp"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Chip 2025  -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/chip2025"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="#FFFFFF"
-                        app:cardCornerRadius="16dp"
-                        app:strokeColor="#E5E7EB"
-                        app:strokeWidth="1dp"
-                        android:layout_marginEnd="8dp">
-                        <TextView
-                            android:id="@+id/tvChip2025"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2025"
-                            android:textColor="#6B7280"
-                            android:paddingHorizontal="16dp"
-                            android:paddingVertical="6dp"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Chip 2024  -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/chip2024"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="#FFFFFF"
-                        app:cardCornerRadius="16dp"
-                        app:strokeColor="#E5E7EB"
-                        app:strokeWidth="1dp"
-                        android:layout_marginEnd="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2024"
-                            android:textColor="#6B7280"
-                            android:paddingHorizontal="16dp"
-                            android:paddingVertical="6dp"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                </LinearLayout>
+                    android:orientation="horizontal" />
             </HorizontalScrollView>
 
             <!-- Kartu Banner -->
@@ -207,51 +148,13 @@
                     app:cardElevation="0dp"/>
             </LinearLayout>
 
-            <!-- SECTION 2026 -->
-            <TextView
-                android:id="@+id/section2026"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tahun 2026"
-                android:textColor="#1E1E1E"
-                android:textSize="16sp"
-                android:fontFamily="@font/inter_bold"
-                android:layout_marginTop="24dp"
-                android:layout_marginHorizontal="24dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView2026"
+            <!-- SECTION PER TAHUN diisi dari MajalahActivity (item_majalah_tahun.xml) -->
+            <LinearLayout
+                android:id="@+id/layoutSectionTahun"
                 android:layout_width="match_parent"
-                android:layout_height="190dp"
-                android:layout_marginTop="12dp"
-                android:clipToPadding="false"
-                android:paddingHorizontal="24dp"
-                android:orientation="horizontal"
-                android:scrollbars="none"
-                tools:listitem="@layout/item_majalah_card" />
-
-            <!-- SECTION 2025 -->
-            <TextView
-                android:id="@+id/section2025"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tahun 2025"
-                android:textColor="#1E1E1E"
-                android:textSize="16sp"
-                android:fontFamily="@font/inter_bold"
-                android:layout_marginTop="32dp"
-                android:layout_marginHorizontal="24dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView2025"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="12dp"
-                android:clipToPadding="false"
-                android:paddingHorizontal="24dp"
-                android:orientation="horizontal"
-                android:scrollbars="none"
-                tools:listitem="@layout/item_majalah_card" />
+                android:orientation="vertical"
+                android:paddingBottom="24dp" />
         </LinearLayout>
     </ScrollView>
 
