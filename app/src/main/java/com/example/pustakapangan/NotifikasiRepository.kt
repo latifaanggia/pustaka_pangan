@@ -30,18 +30,18 @@ object NotifikasiRepository {
             CustomerRepository.getTokenValid(context)))
 
         return (0 until array.length()).map {
-            i -> array.getJSONObject(i).let {
+                i -> array.getJSONObject(i).let {
             Notifikasi(it.getInt("id"),
                 it.getString("tipe"),
                 it.getString("judul"),
                 it.getString("pesan"),
                 it.getBoolean("sudah_dibaca"),
                 parseWaktu(it.getString("created_at")))
-            }
+        }
         }.also {
-            daftar -> jumlahBelumDibacaTerakhir = daftar.count {
-                !it.sudahDibaca
-            }
+                daftar -> jumlahBelumDibacaTerakhir = daftar.count {
+            !it.sudahDibaca
+        }
         }
     }
 
@@ -49,8 +49,8 @@ object NotifikasiRepository {
         JSONArray(SupabaseConfig.get(
             "notifikasi?sudah_dibaca=eq.false&select=id",
             CustomerRepository.getTokenValid(context))).length().also {
-                jumlahBelumDibacaTerakhir = it
-            }
+            jumlahBelumDibacaTerakhir = it
+        }
 
     suspend fun tandaiDibaca(context: Context, idNotif: Int? = null) {
         SupabaseConfig.postRpc(
@@ -62,6 +62,38 @@ object NotifikasiRepository {
             if (idNotif == null) 0
             else (jumlahBelumDibacaTerakhir - 1).coerceAtLeast(0)
     }
+
+    suspend fun ambilUntukPopup(context: Context): List<Notifikasi> {
+        val prefs = context.getSharedPreferences("notif_popup", Context.MODE_PRIVATE)
+        val key = "terakhir_${CustomerRepository.getUserAktif(context)?.id}";
+        val token = CustomerRepository.getTokenValid(context)
+        val terakhir = prefs.getInt(key, -1)
+
+        if (terakhir == -1) {
+            val maks = JSONArray(SupabaseConfig.get("notifikasi?select=id&order=id.desc&limit=1", token)).optJSONObject(0)?.getInt("id") ?: 0
+            prefs.edit().putInt(key, maks).apply();
+            return emptyList()
+        }
+        val array = JSONArray(SupabaseConfig.get("notifikasi?select=*&id=gt.$terakhir&sudah_dibaca=eq.false&order=id.desc&limit=5", token))
+        val baru = (0 until array.length()).map {
+            i -> array.getJSONObject(i).let {
+                Notifikasi(it.getInt("id"),
+                it.getString("tipe"), it.getString("judul"), it.getString("pesan"), false, parseWaktu(it.getString("created_at")))
+            }
+        }
+        if (baru.isNotEmpty()) {
+            prefs.edit().putInt(key, baru.maxOf { it.id }).apply();
+            jumlahBelumDibacaTerakhir = maxOf(jumlahBelumDibacaTerakhir, baru.size)
+        }
+        return baru
+    }
+
+    fun ikon(tipe: String) =
+        when (tipe) {
+            "edisi_baru" -> R.drawable.ic_open_book;
+            "selamat_datang" -> R.drawable.ic_popper;
+            else -> R.drawable.ic_card
+        }
 
     fun perbaruiBadge(activity: AppCompatActivity, dot: View) {
         if (!SessionManager.isLoggedIn(activity)) {
@@ -85,7 +117,8 @@ object NotifikasiRepository {
     private fun parseWaktu(iso: String): Date = try {
         SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US).parse(
             iso.replace(Regex("\\.\\d+"),
-            "").replace(Regex("([+-]\\d{2}):(\\d{2})$"), "$1$2")
+                "").replace(Regex("([+-]\\d{2}):(\\d{2})$"),
+                "$1$2")
         )!!
     }
     catch (e: Exception) {

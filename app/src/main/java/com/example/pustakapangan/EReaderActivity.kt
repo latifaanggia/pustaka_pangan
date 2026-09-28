@@ -144,8 +144,7 @@ class EReaderActivity : AppCompatActivity() {
 
     // PDF TOUCH (TAP TO TOGGLE)
     private fun setupPdfTouch() {
-        imgPage.setOnTouchListener { _, event ->
-            scaleDetector.onTouchEvent(event)
+        imgPage.setOnTouchListener { _, event -> scaleDetector.onTouchEvent(event)
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     downX = event.x
@@ -215,7 +214,11 @@ class EReaderActivity : AppCompatActivity() {
         try {
             parcelFileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
             pdfRenderer = PdfRenderer(parcelFileDescriptor)
-            isOfflineMode = modeOffline; currentPage = 0; currentScale = 1f
+            // Lanjutkan dari halaman terakhir yang dibaca (coerceIn: jaga-jaga kalau PDF di server diganti dan jumlah halamannya berubah)
+            isOfflineMode = modeOffline; currentScale = 1f
+            currentPage = RiwayatBaca.halaman(this, namaFilePdf).coerceIn(0, pdfRenderer.pageCount - 1)
+            if (currentPage > 0) Toast.makeText(this, "Melanjutkan dari halaman ${currentPage + 1}", Toast.LENGTH_SHORT).show()
+            RiwayatBaca.simpan(this, namaFilePdf, currentPage)
             updatePageNumber(); updateNavigationButton(); updateOnlineStatus(); renderPage()
         } catch (e: Exception) {
             if (::parcelFileDescriptor.isInitialized) parcelFileDescriptor.close()
@@ -242,7 +245,7 @@ class EReaderActivity : AppCompatActivity() {
             page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
             imgPage.setImageBitmap(bitmap)
         } finally {
-            page.close() //
+            page.close()
         }
 
         currentScale = 1f
@@ -329,8 +332,8 @@ class EReaderActivity : AppCompatActivity() {
 
     private fun showOptionsMenu() {
         val popup = PopupMenu(this, btnOptions)
-        popup.menu.add("📖 Daftar Isi")
-        popup.menu.add("⬇ Unduh Offline")
+        popup.menu.add("Daftar Isi")
+        popup.menu.add("Unduh Offline")
 
         popup.setOnMenuItemClickListener { item ->
             when (item.title.toString()) {
@@ -355,6 +358,12 @@ class EReaderActivity : AppCompatActivity() {
                 catch (e: Exception) { Toast.makeText(this@EReaderActivity, "Gagal menyimpan: ${e.message}", Toast.LENGTH_LONG).show() }
             }
         }
+    }
+
+    // Simpan posisi baca tiap kali layar ditinggalkan (back, pindah app, layar mati)
+    override fun onPause() {
+        super.onPause()
+        if (::pdfRenderer.isInitialized) RiwayatBaca.simpan(this, namaFilePdf, currentPage)
     }
 
     override fun onDestroy() {

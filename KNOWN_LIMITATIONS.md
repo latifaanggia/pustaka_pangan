@@ -8,42 +8,43 @@ Dokumen ini mencatat bagian-bagian dari Pustaka Pangan yang **masih simulasi/dum
 
 | Bagian | Kondisi Saat Ini | Yang Dibutuhkan untuk Produksi |
 |---|---|---|
-| SSO Google | Simulasi — tombol langsung dianggap berhasil tanpa memanggil Google Sign-In SDK sama sekali | Integrasi Firebase Authentication / Google Identity Services, verifikasi token di server |
-| Password | Tidak divalidasi ke mana pun, tidak di-*hash*, tidak disimpan permanen | Backend dengan hashing (bcrypt/argon2), endpoint login sungguhan |
-| Data akun terdaftar | `CustomerRepository` menyimpan akun yang baru Register **hanya selama proses aplikasi masih hidup** — kalau aplikasi di-*force close*, daftar akun ini hilang. Data user yang **sedang login** tetap tersimpan (lewat `SharedPreferences`), tapi kalau logout lalu Sign In lagi pakai email yang sama setelah aplikasi sempat di-*kill*, sistem tidak akan mengenali itu sebagai akun lama | Database sungguhan (Supabase/API) untuk menyimpan seluruh akun secara permanen |
-| Reset/Ubah Password | Halaman `UbahPasswordActivity` ada, tapi belum diverifikasi apakah sudah tersambung ke `CustomerRepository` atau masih statis | Perlu ditinjau ulang saat masuk fase ini |
+| Register & Sign In email | **Sudah sungguhan** lewat Supabase Auth (password di-*hash* oleh Supabase). Access token (berlaku 1 jam) diperpanjang otomatis pakai refresh token (`CustomerRepository.getTokenValid`) | Enkripsi token di HP (`EncryptedSharedPreferences`), verifikasi email |
+| SSO Google | Simulasi — tombol langsung dianggap berhasil tanpa memanggil Google Sign-In SDK | Google Identity Services + provider Google di Supabase Auth |
+| Ubah Password | Halaman `UbahPasswordActivity` ada, tapi belum tersambung ke Supabase Auth | Endpoint `auth/v1/user` (update password) |
 
 ## Data Majalah & Repository
 
 | Bagian | Kondisi Saat Ini | Yang Dibutuhkan untuk Produksi |
 |---|---|---|
-| Sumber data majalah | `MajalahRepository` — daftar majalah hardcode di kode Kotlin (`listOf(...)`), bukan dari API/database | Ganti isi `MajalahRepository` untuk memanggil API/Supabase, tanpa perlu mengubah Activity pemanggilnya |
-| Cover & Pratinjau Editorial | Gambar cover disimpan sebagai resource `drawable` di dalam APK. Cuma **FRI Vol 07** yang punya aset pratinjau multi-halaman asli (`_hal2` s/d `_hal6`); majalah lain fallback menampilkan cover-nya saja sebagai satu halaman pratinjau | Cover & halaman pratinjau di-upload ke object storage (Supabase Storage/S3), field data berubah dari resource ID (`Int`) ke URL (`String`) |
-| File PDF | PDF sudah di Supabase Storage (bucket `pdf-majalah`, dikompres ±52% pakai Ghostscript `/ebook`). Tapi bucket masih **public** — siapa pun yang tahu URL-nya bisa mengunduh majalah berbayar tanpa membeli. Katalog baru 8 edisi demo (free plan: 1 GB storage, 5 GB egress/bulan) | Bucket private + RLS di `storage.objects` yang cek tabel pembelian + *signed URL* berumur pendek; katalog penuh 2018–2026 (±1,5 GB) butuh Pro plan atau `url_pdf` diarahkan ke server pustakapangan.com |
-| Menambah majalah baru | Harus edit kode (`MajalahRepository.kt`) dan build ulang APK | Idealnya cukup lewat panel admin/CMS di sisi backend, tanpa update aplikasi |
+| Sumber data majalah | Dari tabel `majalah` di Supabase, cover dari Storage (bucket `cover-majalah`). Salinan terakhir disimpan di HP, jadi app tetap bisa dibuka **offline** | Pagination kalau katalog sudah ratusan edisi |
+| Pratinjau Editorial | Cuma **FRI Vol 07** yang punya gambar pratinjau multi-halaman (drawable di APK); majalah lain menampilkan cover saja | Halaman pratinjau di-upload ke Storage per majalah, atau di-render dari 6 halaman pertama PDF |
+| File PDF | PDF di Supabase Storage (bucket `pdf-majalah`, dikompres ±52% pakai Ghostscript `/ebook`). Tapi bucket masih **public** — siapa pun yang tahu URL-nya bisa mengunduh majalah berbayar tanpa membeli. Katalog baru 8 edisi demo (free plan: 1 GB storage, 5 GB egress/bulan) | Bucket private + RLS di `storage.objects` yang cek tabel `pembelian` + *signed URL* berumur pendek; katalog penuh 2018–2026 (±1,5 GB) butuh Pro plan atau `url_pdf` diarahkan ke server pustakapangan.com |
+| Menambah majalah baru | Lewat Supabase Table Editor (tanpa build ulang APK); semua user otomatis dapat notifikasi "Edisi Terbaru" | Panel admin/CMS dengan form upload cover + PDF |
 
-## Fitur Unduh (Baca Offline)
+## Koleksi & Fitur Unduh (Baca Offline)
 
-Sudah **benar-benar mengunduh** lewat `PdfDownloader` (stream per 64 KB, file `.tmp` lalu rename atomic, cek memori kosong, pesan error untuk offline/timeout/404). Baca online disimpan di **cache** (`cacheDir`), unduhan offline di **local storage** (`filesDir`) sesuai arahan mentor; status "sudah diunduh" dicek dari keberadaan file, bukan flag `SharedPreferences`. Batasan yang tersisa:
-- Unduhan terikat ke layar (`lifecycleScope`): keluar dari layar atau **rotasi layar** membatalkan unduhan dan harus diulang. Produksi: `WorkManager` (tetap jalan di background + notifikasi progres) dan resume unduhan dengan header HTTP `Range`
-- Layout Koleksi masih hardcode 3 item (Vol 07/06/05); tombol unduh Vol 07 belum punya ID. Produksi: `RecyclerView` dari data pembelian user
-- Belum ada fitur hapus unduhan / kelola penyimpanan
+Koleksi menampilkan majalah yang **benar-benar dibeli** user (tabel `pembelian`), dikelompokkan per tahun, plus kartu "Terakhir Dibaca" yang membuka E-Reader di halaman terakhir. Unduhan lewat `PdfDownloader` (stream per 64 KB, file `.tmp` lalu rename atomic, cek memori kosong). Baca online disimpan di **cache** (`cacheDir`), unduhan offline di **local storage** (`filesDir`) sesuai arahan mentor. Daftar pembelian ikut disimpan di HP, jadi Koleksi tetap bisa dibuka offline. Batasan yang tersisa:
+- Unduhan terikat ke layar (`lifecycleScope`): keluar dari Koleksi atau **rotasi layar** membatalkan unduhan. Produksi: `WorkManager` (jalan di background + notifikasi progres) dan resume unduhan dengan header HTTP `Range`
+- File unduhan tetap tersimpan di HP setelah logout (tidak terlihat oleh akun lain karena Koleksi difilter per pembelian). Produksi: hapus unduhan saat logout atau enkripsi file per akun
+- Posisi halaman terakhir disimpan lokal di HP, belum tersinkron antar perangkat
 - Kompresi dilakukan manual sekali di sisi admin sebelum upload, belum otomatis di pipeline upload
 
-## Top Up & Pembayaran
+## Top Up, Pembelian & Pembayaran
 
 | Bagian | Kondisi Saat Ini | Yang Dibutuhkan untuk Produksi |
 |---|---|---|
-| Metode pembayaran | Tidak ada integrasi payment gateway sungguhan (BCA/QRIS). Alur konfirmasi sepenuhnya manual lewat WhatsApp ke admin | Integrasi payment gateway (Midtrans/Xendit dll) untuk verifikasi otomatis |
-| Update saldo | Setelah top up "berhasil", saldo user **tidak otomatis bertambah** — belum ada mekanisme approval dari sisi admin yang mengubah `saldo` di `CustomerRepository`/backend | Endpoint approval di backend, yang men-trigger update saldo user |
-| Riwayat Top Up | Tersimpan di `TopUpRepository` (dummy, di memori) — hilang saat aplikasi di-*force close* kecuali sedang login (behaviornya sama seperti keterbatasan Customer di atas) | Simpan riwayat ke database sungguhan |
+| Metode pembayaran | Transfer BCA/QRIS manual, bukti dikirim lewat WhatsApp ke admin | Payment gateway (Midtrans/Xendit): Virtual Account/QRIS dinamis + *webhook* supaya saldo masuk otomatis dalam hitungan detik |
+| Konfirmasi top up | Admin mengubah `status` di Supabase Dashboard (`Berhasil`/`Ditolak`); trigger database otomatis menambah saldo + mengirim notifikasi. Status final tidak bisa diubah lagi, nominal tidak bisa diedit | Akses Dashboard = "kunci master" database, tidak cocok untuk banyak staf. Produksi: panel admin khusus dengan role (tombol Terima/Tolak saja) + kode unik nominal transfer |
+| Keamanan saldo | Client **tidak bisa** mengubah saldo (RLS + grant per kolom). Top up dari app wajib berstatus "Menunggu Konfirmasi" | — |
+| Pembelian majalah | Lewat fungsi database `beli_majalah` (cek saldo, potong saldo, catat pembelian dalam **1 transaksi atomik**); majalah yang sama tidak bisa dibeli dua kali | Fitur refund/pembatalan, riwayat pembelian untuk user |
 
 ## Notifikasi
 
-- Konten notifikasi **statis/hardcode** — cuma ada 1 kartu contoh (Vol 07 terbaru), bukan digenerate otomatis dari kejadian nyata (majalah baru terbit, top up dikonfirmasi, dsb)
-- **Tidak ada tabel `notifikasi` di skema database asli** (sudah dicek langsung ke SQL dump) — artinya fitur ini murni buatan sisi Android, belum punya "rumah" di backend
-- Badge merah di ikon lonceng sudah sinkron dengan status baca (lewat `NotifikasiState` + `SharedPreferences`), tapi ini baru status "ada/tidak ada yang belum dibaca" secara global, bukan per-notifikasi individual
-- Tidak ada push notification (Firebase Cloud Messaging) — notifikasi hanya muncul kalau user membuka halaman Notifikasi secara manual
+Notifikasi disimpan di tabel `notifikasi` dan dibuat **otomatis oleh trigger database** (top up dikonfirmasi/ditolak, edisi baru ditambahkan, akun baru terdaftar). Badge lonceng dihitung dari notifikasi belum dibaca. Selama app terbuka, notifikasi baru muncul sebagai **banner pop-up in-app** (dicek tiap 30 detik, berhenti otomatis saat app di background). Batasan yang tersisa:
+- **Belum ada push notification** saat app ditutup (Firebase Cloud Messaging). Sudah didiskusikan dengan mentor: ditunda karena butuh setup Firebase + Edge Function + izin notifikasi Android 13, dan waktu PKL tersisa 2–3 hari. Fondasinya (tabel + trigger) sudah siap: tinggal kirim tiap baris baru ke FCM lewat Database Webhook → Edge Function
+- Banner pop-up memakai *polling* (cek berkala), bukan real-time. Produksi: Supabase Realtime atau FCM
+- Notifikasi "Edisi Terbaru" ditulis 1 baris per user (fan-out) — cukup untuk prototype, tapi untuk ribuan user sebaiknya tabel broadcast + status baca terpisah
+- Hanya 50 notifikasi terbaru yang dimuat (belum ada pagination)
 
 ## Langganan (Subscription)
 
