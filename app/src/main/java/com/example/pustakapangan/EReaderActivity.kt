@@ -36,6 +36,7 @@ class EReaderActivity : AppCompatActivity() {
 
     // VIEW
     private lateinit var imgPage: ImageView
+    private lateinit var pdfContainer: View
     private lateinit var tvTitle: TextView
     private lateinit var tvStatus: TextView
     private lateinit var tvPageNumber: TextView
@@ -54,6 +55,11 @@ class EReaderActivity : AppCompatActivity() {
     private var downX = 0f
     private var downY = 0f
     private var isScaling = false
+    private var geserX = 0f; private var geserY = 0f
+    private var lastX = 0f;
+    private var lastY = 0f;
+    private var lastFocusX = 0f;
+    private var lastFocusY = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +98,7 @@ class EReaderActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        imgPage = findViewById(R.id.imgPage)
+        imgPage = findViewById(R.id.imgPage); pdfContainer = findViewById(R.id.pdfContainer)
         tvTitle = findViewById(R.id.tvTitle)
         tvStatus = findViewById(R.id.tvStatus)
         btnBack = findViewById(R.id.btnBack)
@@ -111,20 +117,17 @@ class EReaderActivity : AppCompatActivity() {
     private fun setupScaleDetector() {
         scaleDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-                isScaling = true
+                isScaling = true; lastFocusX = detector.focusX; lastFocusY = detector.focusY
                 if (!isFullscreenReader) toggleReaderControls()
                 return true
             }
 
+            // Zoom ke titik di antara 2 jari (bukan selalu ke tengah) + ikut geser kalau 2 jari bergerak bersama
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                currentScale *= detector.scaleFactor
-                currentScale = currentScale.coerceIn(1f, 4f)
-                applyZoom()
+                geserX += detector.focusX - lastFocusX; geserY += detector.focusY - lastFocusY
+                lastFocusX = detector.focusX; lastFocusY = detector.focusY
+                zoomKe(currentScale * detector.scaleFactor, detector.focusX, detector.focusY)
                 return true
-            }
-
-            override fun onScaleEnd(detector: ScaleGestureDetector) {
-                isScaling = false
             }
         })
     }
@@ -143,25 +146,23 @@ class EReaderActivity : AppCompatActivity() {
     }
 
     // PDF TOUCH (TAP TO TOGGLE)
+    // PENTING: listener dipasang di pdfContainer, BUKAN di imgPage. Koordinat sentuhan di imgPage ikut ter-scale
+    // oleh zoom-nya sendiri -> hasil hitungan zoom berubah tiap frame -> tampilan bergetar. Container gak pernah di-scale.
     private fun setupPdfTouch() {
-        imgPage.setOnTouchListener { _, event -> scaleDetector.onTouchEvent(event)
+        pdfContainer.setOnTouchListener { _, event ->
+            scaleDetector.onTouchEvent(event)
             when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    downX = event.x
-                    downY = event.y
-                    true
+                MotionEvent.ACTION_DOWN -> { downX = event.x; downY = event.y; lastX = event.x; lastY = event.y; isScaling = false }
+                // 1 jari digeser saat zoom = pan (lihat bagian lain halaman)
+                MotionEvent.ACTION_MOVE -> if (!scaleDetector.isInProgress && event.pointerCount == 1) {
+                    if (currentScale > 1f) { geserX += event.x - lastX; geserY += event.y - lastY; applyZoom() }
+                    lastX = event.x; lastY = event.y
                 }
-                MotionEvent.ACTION_UP -> {
-                    val moveX = kotlin.math.abs(event.x - downX)
-                    val moveY = kotlin.math.abs(event.y - downY)
-
-                    if (!isScaling && moveX < 20 && moveY < 20) {
-                        toggleReaderControls()
-                    }
-                    true
-                }
-                else -> true
+                // Salah satu jari diangkat: lanjutkan dari jari yang tersisa, supaya halaman gak "loncat"
+                MotionEvent.ACTION_POINTER_UP -> { val sisa = if (event.actionIndex == 0) 1 else 0; lastX = event.getX(sisa); lastY = event.getY(sisa) }
+                MotionEvent.ACTION_UP -> if (!isScaling && kotlin.math.abs(event.x - downX) < 20 && kotlin.math.abs(event.y - downY) < 20) toggleReaderControls()
             }
+            true
         }
     }
 
@@ -245,10 +246,10 @@ class EReaderActivity : AppCompatActivity() {
             page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
             imgPage.setImageBitmap(bitmap)
         } finally {
-            page.close()
+            page.close() //
         }
 
-        currentScale = 1f
+        currentScale = 1f; geserX = 0f; geserY = 0f
         applyZoom()
         updatePageNumber()
         updateNavigationButton()
@@ -283,21 +284,31 @@ class EReaderActivity : AppCompatActivity() {
     }
 
     // ZOOM IN / OUT
-    private fun zoomIn() {
-        currentScale += 0.25f
-        currentScale = currentScale.coerceAtMost(4f)
-        applyZoom()
+    private fun zoomIn() = zoomKe(currentScale + 0.25f, pdfContainer.width / 2f, pdfContainer.height / 2f)
+    private fun zoomOut() = zoomKe(currentScale - 0.25f, pdfContainer.width / 2f, pdfContainer.height / 2f)
+
+    // Zoom dengan titik fokus (fx, fy) tetap diam di bawah jari
+    private fun zoomKe(target: Float, fx: Float, fy: Float) {
+        val baru = target.coerceIn(1f, 4f); val rasio = baru / currentScale
+        val cx = pdfContainer.width / 2f; val cy = pdfContainer.height / 2f // pivot scale default = tengah view
+        geserX = (fx - cx) - (fx - cx - geserX) * rasio; geserY = (fy - cy) - (fy - cy - geserY) * rasio
+        currentScale = baru; applyZoom()
     }
 
-    private fun zoomOut() {
-        currentScale -= 0.25f
-        currentScale = currentScale.coerceAtLeast(1f)
-        applyZoom()
-    }
-
+    // Terapkan zoom + geser
     private fun applyZoom() {
-        imgPage.scaleX = currentScale
-        imgPage.scaleY = currentScale
+        imgPage.scaleX = currentScale; imgPage.scaleY = currentScale
+        val d = imgPage.drawable; val w = imgPage.width.toFloat(); val h = imgPage.height.toFloat()
+        if (d == null || w == 0f || d.intrinsicWidth <= 0) {
+            geserX = 0f; geserY = 0f
+        }
+        else {
+            val fit = minOf(w / d.intrinsicWidth, h / d.intrinsicHeight) // ukuran halaman setelah fitCenter
+            val maxX = maxOf(0f, (d.intrinsicWidth * fit * currentScale - w) / 2);
+            val maxY = maxOf(0f, (d.intrinsicHeight * fit * currentScale - h) / 2)
+            geserX = geserX.coerceIn(-maxX, maxX); geserY = geserY.coerceIn(-maxY, maxY)
+        }
+        imgPage.translationX = geserX; imgPage.translationY = geserY
     }
 
     // FULLSCREEN READER
