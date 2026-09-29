@@ -202,11 +202,11 @@ class DetailMajalahActivity : AppCompatActivity() {
     }
 
     // Login: "diambil" lewat beli_majalah (harga 0, saldo tetap) supaya masuk Koleksi & bisa diunduh offline.
-    // Tamu: tetap boleh langsung baca online.
+    // Tamu: wajib Sign In dulu
     private fun ambilGratis() {
         if (!SessionManager.isLoggedIn(this)) {
-            bukaEReader();
-            return
+            Toast.makeText(this, "Masuk dulu untuk membaca majalah gratis", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, SignInActivity::class.java)); return
         }
         val btnAction = findViewById<MaterialButton>(R.id.btnAction).apply {
             isEnabled = false
