@@ -1,6 +1,8 @@
 package com.example.pustakapangan
 
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfRenderer
@@ -146,8 +148,6 @@ class EReaderActivity : AppCompatActivity() {
     }
 
     // PDF TOUCH (TAP TO TOGGLE)
-    // PENTING: listener dipasang di pdfContainer, BUKAN di imgPage. Koordinat sentuhan di imgPage ikut ter-scale
-    // oleh zoom-nya sendiri -> hasil hitungan zoom berubah tiap frame -> tampilan bergetar. Container gak pernah di-scale.
     private fun setupPdfTouch() {
         pdfContainer.setOnTouchListener { _, event ->
             scaleDetector.onTouchEvent(event)
@@ -335,11 +335,19 @@ class EReaderActivity : AppCompatActivity() {
         if (isOfflineMode) {
             tvStatus.text = "Membaca Offline"
             tvStatus.setTextColor(Color.parseColor("#E67E22")) // Oranye
+        } else if (!adaInternet()) {
+            tvStatus.text = "Membaca dari Cache"
+            tvStatus.setTextColor(Color.parseColor("#6B7280")) // Abu-abu
         } else {
             tvStatus.text = "Membaca Online"
             tvStatus.setTextColor(Color.parseColor("#00A859")) // Hijau
         }
     }
+
+    private fun adaInternet(): Boolean = try {
+        val cm = getSystemService(ConnectivityManager::class.java)
+        cm?.getNetworkCapabilities(cm.activeNetwork)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    } catch (e: Exception) { true }
 
     private fun showOptionsMenu() {
         val popup = PopupMenu(this, btnOptions)
@@ -348,11 +356,11 @@ class EReaderActivity : AppCompatActivity() {
 
         popup.setOnMenuItemClickListener { item ->
             when (item.title.toString()) {
-                "📖 Daftar Isi" -> {
+                "Daftar Isi" -> {
                     Toast.makeText(this, "Daftar Isi belum tersedia", Toast.LENGTH_SHORT).show()
                     true
                 }
-                "⬇ Unduh Offline" -> { unduhOffline(); true }
+                "Unduh Offline" -> { unduhOffline(); true }
                 else -> false
             }
         }

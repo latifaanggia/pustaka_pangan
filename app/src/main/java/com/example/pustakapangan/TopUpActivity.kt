@@ -14,6 +14,7 @@ import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 
 class TopUpActivity : AppCompatActivity() {
+    companion object { const val NOMINAL_MINIMAL = 10_000 }
     private var metodeTerpilih = "BCA"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +110,11 @@ class TopUpActivity : AppCompatActivity() {
                 etInputNominal.text.toString().filter { it.isDigit() }.toIntOrNull() ?: 0
             } else {
                 nominalTerpilih.filter { it.isDigit() }.toIntOrNull() ?: 0
+            }
+            // Validasi nominal: tolak kosong/0 dan di bawah minimal
+            if (nominalInt < NOMINAL_MINIMAL) {
+                android.widget.Toast.makeText(this, if (nominalInt <= 0) "Masukkan nominal top up terlebih dahulu" else "Minimal top up Rp${"%,d".format(NOMINAL_MINIMAL).replace(',', '.')}", android.widget.Toast.LENGTH_SHORT).show()
+                etInputNominal.requestFocus(); return@setOnClickListener
             }
             val namaMetode = if (metodeTerpilih == "BCA") "BCA Transfer" else "QRIS"
 

@@ -36,6 +36,7 @@ Koleksi menampilkan majalah yang **benar-benar dibeli** user (tabel `pembelian`)
 | Metode pembayaran | Transfer BCA/QRIS manual, bukti dikirim lewat WhatsApp ke admin | Payment gateway (Midtrans/Xendit): Virtual Account/QRIS dinamis + *webhook* supaya saldo masuk otomatis dalam hitungan detik |
 | Konfirmasi top up | Admin mengubah `status` di Supabase Dashboard (`Berhasil`/`Ditolak`); trigger database otomatis menambah saldo + mengirim notifikasi. Status final tidak bisa diubah lagi, nominal tidak bisa diedit | Akses Dashboard = "kunci master" database, tidak cocok untuk banyak staf. Produksi: panel admin khusus dengan role (tombol Terima/Tolak saja) + kode unik nominal transfer |
 | Keamanan saldo | Client **tidak bisa** mengubah saldo (RLS + grant per kolom). Top up dari app wajib berstatus "Menunggu Konfirmasi" | — |
+| Pembatalan top up | User belum bisa membatalkan sendiri top up yang salah pencet; solusinya admin mengubah status jadi `Ditolak`. Nominal 0/di bawah Rp10.000 sudah ditolak di app, dan nominal ≤ 0 juga ditolak database (`topup_nominal_positif`) | Status baru `Dibatalkan` + fungsi RPC `batalkan_topup` (hanya pemilik & hanya saat "Menunggu Konfirmasi") + tombol Batalkan di Riwayat Top Up |
 | Pembelian majalah | Lewat fungsi database `beli_majalah` (cek saldo, potong saldo, catat pembelian dalam **1 transaksi atomik**); majalah yang sama tidak bisa dibeli dua kali | Fitur refund/pembatalan, riwayat pembelian untuk user |
 
 ## Notifikasi
@@ -45,6 +46,12 @@ Notifikasi disimpan di tabel `notifikasi` dan dibuat **otomatis oleh trigger dat
 - Banner pop-up memakai *polling* (cek berkala), bukan real-time. Produksi: Supabase Realtime atau FCM
 - Notifikasi "Edisi Terbaru" ditulis 1 baris per user (fan-out) — cukup untuk prototype, tapi untuk ribuan user sebaiknya tabel broadcast + status baca terpisah
 - Hanya 50 notifikasi terbaru yang dimuat (belum ada pagination)
+
+## Akun & Autentikasi
+
+- **Ubah Password** sudah berfungsi: password lama diverifikasi dulu, lalu password baru disimpan ke Supabase Auth
+- **Lupa Password belum tersedia** (tombol hanya menampilkan info). Produksi: `auth/v1/recover` mengirim email reset + *deep link* kembali ke app untuk mengisi password baru
+- **SSO Google belum tersedia** (butuh setup Google Cloud Console + provider Google di Supabase)
 
 ## Langganan (Subscription)
 

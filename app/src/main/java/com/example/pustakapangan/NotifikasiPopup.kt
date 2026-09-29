@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 
 // Pop-up notifikasi IN-APP
 object NotifikasiPopup {
+    interface PenerimaNotifikasi { fun onNotifikasiBaru(daftar: List<Notifikasi>) }
     private const val INTERVAL_MS = 30_000L
     private const val TAG_BANNER = "banner_notifikasi"
     private val LAYAR_TANPA_POPUP = setOf(
@@ -65,8 +66,9 @@ object NotifikasiPopup {
         val dot: View? = activity.findViewById(R.id.dotNotifBell);
         dot?.visibility = View.VISIBLE
         tampilkan(activity, baru.first(), baru.size - 1)
+        (activity as? PenerimaNotifikasi)?.onNotifikasiBaru(baru)
         if (baru.any { it.tipe == "topup_berhasil" }
-            )
+        )
             try {
                 CustomerRepository.refreshSaldo(activity)
             }
@@ -98,8 +100,8 @@ object NotifikasiPopup {
         fun tutup() {
             if (banner.isAttachedToWindow)
                 banner.animate().translationY(-(banner.height + atas).toFloat()).alpha(0f).setDuration(200).withEndAction {
-                root.removeView(banner)
-            }.start()
+                    root.removeView(banner)
+                }.start()
         }
         banner.setOnClickListener {
             tutup();

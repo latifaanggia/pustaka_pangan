@@ -21,6 +21,10 @@ object SupabaseConfig {
     suspend fun postAuth(path: String, bodyJson: String): String =
         request("$PROJECT_URL/auth/v1/$path", "POST", bodyJson, null)
 
+    // Update data akun Auth (mis. password)
+    suspend fun putAuth(path: String, bodyJson: String, accessToken: String): String =
+        request("$PROJECT_URL/auth/v1/$path", "PUT", bodyJson, accessToken)
+
     private suspend fun request(urlString: String, method: String, bodyJson: String?, accessToken: String?): String =
         withContext(Dispatchers.IO) {
             val url = URL(urlString)

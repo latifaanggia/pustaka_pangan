@@ -72,6 +72,24 @@ object CustomerRepository {
         return customer
     }
 
+    // Verifikasi password lama dengan login ulang
+    suspend fun ubahPassword(context: Context, passwordLama: String, passwordBaru: String) {
+        val user = getUserAktif(context) ?: throw Exception("Sesi berakhir, silakan masuk lagi")
+        try {
+            SupabaseConfig.postAuth(
+                "token?grant_type=password", JSONObject()
+                    .put("email", user.email)
+                    .put("password", passwordLama).toString()
+            )
+        }
+        catch (e: java.io.IOException) { throw e }
+        catch (e: Exception) { throw Exception("Password lama salah") }
+        SupabaseConfig.putAuth("user", JSONObject().put(
+            "password",
+            passwordBaru).toString(),
+            getTokenValid(context))
+    }
+
     fun getUserAktif(context: Context): Customer? {
         if (userAktif == null) {
             userAktif = muatSesi(context)
@@ -84,7 +102,9 @@ object CustomerRepository {
         if (System.currentTimeMillis() / 1000 < user.expiresAt - 60) return user.accessToken
         if (user.refreshToken.isBlank()) throw Exception("Sesi berakhir, silakan login ulang")
         val hasil = try { JSONObject(SupabaseConfig.postAuth("token?grant_type=refresh_token", JSONObject().put("refresh_token", user.refreshToken).toString())) }
-        catch (e: Exception) { throw Exception("Sesi berakhir, silakan login ulang") }
+        catch (e: Exception) {
+            throw Exception("Sesi berakhir, silakan login ulang")
+        }
         val baru = user.copy(accessToken = hasil.getString("access_token"), refreshToken = hasil.optString("refresh_token", user.refreshToken), expiresAt = hitungExpiresAt(hasil))
         simpanSesi(context, baru)
         return baru.accessToken

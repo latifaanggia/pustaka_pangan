@@ -35,11 +35,12 @@ class MajalahActivity : AppCompatActivity() {
         val dot3 = findViewById<MaterialCardView>(R.id.dot3)
         val dots = listOf(dot1, dot2, dot3)
 
-        val majalahTerbaru = MajalahRepository.getTerbaru(3)
-        val bannerMajalahData = majalahTerbaru.mapIndexed { index, m ->
-            val tag = when (index) { 0 -> "TERBARU"; 1 -> "TERPOPULER"; else -> "PILIHAN" }
-            BannerMajalahItem(m.id, m.urlCover, tag, m.judul, "Beli - Rp${"%,d".format(m.harga).replace(',', '.')}")
-        }
+        // Slide 1: edisi terbaru, slide 2: pembeli terbanyak (bukan edisi yang sama), slide 3: edisi terbaru berikutnya
+        val terbaru = MajalahRepository.getTerbaru(3)
+        val populer = MajalahRepository.getPopuler(5).firstOrNull { it.id != terbaru.firstOrNull()?.id }
+        val pilihan = terbaru.drop(1).firstOrNull { it.id != populer?.id }
+        val bannerMajalahData = listOfNotNull(terbaru.firstOrNull()?.let { "TERBARU" to it }, populer?.let { "TERPOPULER" to it }, pilihan?.let { "PILIHAN" to it })
+            .map { (tag, m) -> BannerMajalahItem(m.id, m.urlCover, tag, m.judul, "Beli - Rp${"%,d".format(m.harga).replace(',', '.')}") }
 
         viewPager.adapter = MajalahHeroAdapter(bannerMajalahData) { majalahId -> bukaDetailMajalah(majalahId) }
 

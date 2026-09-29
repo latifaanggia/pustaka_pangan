@@ -76,6 +76,11 @@ class SignInActivity : AppCompatActivity() {
         val tvDaftar = findViewById<TextView>(R.id.tvDaftar)
         tvDaftar.setOnClickListener { startActivity(Intent(this, RegisterActivity::class.java)) }
 
+        // Reset password via email belum diimplementasikan di prototipe (butuh deep link) -> beri info, bukan tombol mati
+        findViewById<TextView>(R.id.tvLupaPassword).setOnClickListener {
+            Toast.makeText(this, "Reset password belum tersedia di prototipe, silakan hubungi admin FoodReview.", Toast.LENGTH_LONG).show()
+        }
+
         val btnGoogle = findViewById<MaterialCardView>(R.id.btnGoogle)
         btnGoogle.setOnClickListener {
             Toast.makeText(this, "SSO Google belum tersedia di prototipe ini", Toast.LENGTH_SHORT).show()

@@ -6,9 +6,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class UbahPasswordActivity : AppCompatActivity() {
 
@@ -49,5 +53,30 @@ class UbahPasswordActivity : AppCompatActivity() {
         etPassLama.addTextChangedListener(textWatcher)
         etPassBaru.addTextChangedListener(textWatcher)
         etPassKonfirm.addTextChangedListener(textWatcher)
+
+        // Simpan password: validasi lokal dulu, baru kirim ke Supabase
+        btnSimpan.setOnClickListener {
+            val lama = etPassLama.text.toString(); val baru = etPassBaru.text.toString(); val konfirm = etPassKonfirm.text.toString()
+            val error = when {
+                baru.length < 8 -> "Password baru minimal 8 karakter"
+                !baru.any { it.isDigit() } || !baru.any { it.isLetter() } -> "Password harus kombinasi angka dan huruf"
+                baru != konfirm -> "Konfirmasi password tidak sama"
+                baru == lama -> "Password baru harus berbeda dari password lama"
+                else -> null
+            }
+            if (error != null) { Toast.makeText(this, error, Toast.LENGTH_SHORT).show(); return@setOnClickListener }
+            btnSimpan.isEnabled = false; btnSimpan.text = "Menyimpan..."
+            lifecycleScope.launch {
+                try {
+                    CustomerRepository.ubahPassword(this@UbahPasswordActivity, lama, baru)
+                    Toast.makeText(this@UbahPasswordActivity, "Password berhasil diubah", Toast.LENGTH_SHORT).show(); finish()
+                } catch (e: CancellationException) { throw e
+                } catch (e: Exception) {
+                    val pesan = if (e is java.io.IOException) "Tidak ada koneksi internet" else e.message ?: "Gagal mengubah password"
+                    Toast.makeText(this@UbahPasswordActivity, pesan, Toast.LENGTH_LONG).show()
+                    btnSimpan.isEnabled = true; btnSimpan.text = "Simpan Perubahan"
+                }
+            }
+        }
     }
 }

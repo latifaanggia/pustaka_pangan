@@ -54,7 +54,7 @@ object TopUpRepository {
     private fun formatTanggal(iso: String): String {
         return try {
             val bagianTanggal = iso.take(19)
-            val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US)
+            val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US).apply { timeZone = java.util.TimeZone.getTimeZone("UTC") }
             val formatter = java.text.SimpleDateFormat("dd MMMM yyyy, HH.mm", java.util.Locale("in", "ID"))
             formatter.format(parser.parse(bagianTanggal)!!)
         } catch (e: Exception) {

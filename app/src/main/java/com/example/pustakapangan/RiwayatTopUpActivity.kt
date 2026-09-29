@@ -18,39 +18,41 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 
-class RiwayatTopUpActivity : AppCompatActivity() {
+class RiwayatTopUpActivity : AppCompatActivity(), NotifikasiPopup.PenerimaNotifikasi {
+    private lateinit var recyclerView: RecyclerView
+    private var user: Customer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayat_topup)
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener { finish() }
+        recyclerView = findViewById<RecyclerView>(R.id.recyclerViewRiwayat).apply { layoutManager = LinearLayoutManager(this@RiwayatTopUpActivity) }
+        user = CustomerRepository.getUserAktif(this)
+        if (user == null) { Toast.makeText(this, "Sesi login habis, silakan masuk lagi.", Toast.LENGTH_LONG).show(); finish() }
+    }
 
-        val btnBack = findViewById<ImageView>(R.id.btnBack)
-        btnBack.setOnClickListener { finish() }
+    // Muat ulang setiap halaman tampil
+    override fun onResume() {
+        super.onResume();
+        muatRiwayat()
+    }
 
-        val user = CustomerRepository.getUserAktif(this)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewRiwayat)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+    // Dipanggil NotifikasiPopup saat ada notif baru ketika halaman ini sedang terbuka
+    override fun onNotifikasiBaru(daftar: List<Notifikasi>) { if (daftar.any { it.tipe.startsWith("topup") }) muatRiwayat() }
 
-        if (user == null) {
-            Toast.makeText(
-                this,
-                "Sesi login habis, silakan masuk lagi.",
-                Toast.LENGTH_LONG).show()
-            finish()
-            return
-        }
-
+    private fun muatRiwayat() {
+        val u = user ?: return
         lifecycleScope.launch {
             try {
-                val daftarRiwayat = TopUpRepository.getRiwayatByCustomer(
-                    CustomerRepository.getTokenValid(
-                    this@RiwayatTopUpActivity),
-                    user.id)
-                recyclerView.adapter = RiwayatTopUpAdapter(daftarRiwayat) {
-                    pesanWa -> bukaWhatsApp(pesanWa)
-                }
+                val daftarRiwayat = TopUpRepository.getRiwayatByCustomer(CustomerRepository.getTokenValid(this@RiwayatTopUpActivity), u.id)
+                recyclerView.adapter = RiwayatTopUpAdapter(daftarRiwayat) { pesanWa -> bukaWhatsApp(pesanWa) }
+            } catch (e: kotlinx.coroutines.CancellationException) { throw e
             } catch (e: Exception) {
-                Toast.makeText(this@RiwayatTopUpActivity, "Gagal memuat riwayat: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@RiwayatTopUpActivity,
+                    "Gagal memuat riwayat: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
