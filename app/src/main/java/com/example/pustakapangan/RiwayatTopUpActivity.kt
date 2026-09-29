@@ -11,16 +11,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RiwayatTopUpActivity : AppCompatActivity(), NotifikasiPopup.PenerimaNotifikasi {
     private lateinit var recyclerView: RecyclerView
     private var user: Customer? = null
+    private var idMenunggu = emptySet<Int>() // id top up yang masih "Menunggu Konfirmasi" di pemuatan terakhir
+    private var sudahDimuat = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,32 +34,31 @@ class RiwayatTopUpActivity : AppCompatActivity(), NotifikasiPopup.PenerimaNotifi
         findViewById<ImageView>(R.id.btnBack).setOnClickListener { finish() }
         recyclerView = findViewById<RecyclerView>(R.id.recyclerViewRiwayat).apply { layoutManager = LinearLayoutManager(this@RiwayatTopUpActivity) }
         user = CustomerRepository.getUserAktif(this)
-        if (user == null) { Toast.makeText(this, "Sesi login habis, silakan masuk lagi.", Toast.LENGTH_LONG).show(); finish() }
-    }
-
-    // Muat ulang setiap halaman tampil
-    override fun onResume() {
-        super.onResume();
-        muatRiwayat()
-    }
-
-    // Dipanggil NotifikasiPopup saat ada notif baru ketika halaman ini sedang terbuka
-    override fun onNotifikasiBaru(daftar: List<Notifikasi>) { if (daftar.any { it.tipe.startsWith("topup") }) muatRiwayat() }
-
-    private fun muatRiwayat() {
-        val u = user ?: return
+        if (user == null) { Toast.makeText(this, "Sesi login habis, silakan masuk lagi.", Toast.LENGTH_LONG).show(); finish(); return }
         lifecycleScope.launch {
-            try {
-                val daftarRiwayat = TopUpRepository.getRiwayatByCustomer(CustomerRepository.getTokenValid(this@RiwayatTopUpActivity), u.id)
-                recyclerView.adapter = RiwayatTopUpAdapter(daftarRiwayat) { pesanWa -> bukaWhatsApp(pesanWa) }
-            } catch (e: kotlinx.coroutines.CancellationException) { throw e
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this@RiwayatTopUpActivity,
-                    "Gagal memuat riwayat: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (true) {
+                    val sebelumnya = idMenunggu
+                    muatRiwayat()
+                    if (sebelumnya.any { it !in idMenunggu }) NotifikasiPopup.cekSekarang(this@RiwayatTopUpActivity)
+                    delay(if (idMenunggu.isNotEmpty()) 10_000 else 30_000)
+                }
             }
+        }
+    }
+
+    override fun onNotifikasiBaru(daftar: List<Notifikasi>) { if (daftar.any { it.tipe.startsWith("topup") }) lifecycleScope.launch { muatRiwayat() } }
+
+    private suspend fun muatRiwayat() {
+        val u = user ?: return
+        try {
+            val daftarRiwayat = TopUpRepository.getRiwayatByCustomer(CustomerRepository.getTokenValid(this), u.id)
+            idMenunggu = daftarRiwayat.filter { it.status == "Menunggu Konfirmasi" }.map { it.id }.toSet()
+            (recyclerView.adapter as? RiwayatTopUpAdapter)?.perbarui(daftarRiwayat) ?: run { recyclerView.adapter = RiwayatTopUpAdapter(daftarRiwayat) { pesanWa -> bukaWhatsApp(pesanWa) } }
+            sudahDimuat = true
+        } catch (e: CancellationException) { throw e
+        } catch (e: Exception) {
+            if (!sudahDimuat) Toast.makeText(this, "Gagal memuat riwayat: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -72,7 +77,7 @@ class RiwayatTopUpActivity : AppCompatActivity(), NotifikasiPopup.PenerimaNotifi
     }
 
     class RiwayatTopUpAdapter(
-        private val items: List<RiwayatTopUp>,
+        private var items: List<RiwayatTopUp>,
         private val onKonfirmasiWaClick: (String) -> Unit
     ) : RecyclerView.Adapter<RiwayatTopUpAdapter.ViewHolder>() {
 
@@ -136,5 +141,8 @@ class RiwayatTopUpActivity : AppCompatActivity(), NotifikasiPopup.PenerimaNotifi
         }
 
         override fun getItemCount() = items.size
+
+        @android.annotation.SuppressLint("NotifyDataSetChanged")
+        fun perbarui(baru: List<RiwayatTopUp>) { if (baru != items) { items = baru; notifyDataSetChanged() } }
     }
 }

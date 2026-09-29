@@ -35,6 +35,8 @@ class EReaderActivity : AppCompatActivity() {
     private var currentPage = 0
     private var namaFilePdf = "2026_vol_07.pdf"
     private var isOfflineMode = false
+    private var sudahInfoUnduh = false
+    private companion object { const val MENU_DAFTAR_ISI = 1; const val MENU_UNDUH = 2 }
 
     // VIEW
     private lateinit var imgPage: ImageView
@@ -148,6 +150,8 @@ class EReaderActivity : AppCompatActivity() {
     }
 
     // PDF TOUCH (TAP TO TOGGLE)
+    // PENTING: listener dipasang di pdfContainer, BUKAN di imgPage. Koordinat sentuhan di imgPage ikut ter-scale
+    // oleh zoom-nya sendiri -> hasil hitungan zoom berubah tiap frame -> tampilan bergetar. Container gak pernah di-scale.
     private fun setupPdfTouch() {
         pdfContainer.setOnTouchListener { _, event ->
             scaleDetector.onTouchEvent(event)
@@ -336,8 +340,10 @@ class EReaderActivity : AppCompatActivity() {
             tvStatus.text = "Membaca Offline"
             tvStatus.setTextColor(Color.parseColor("#E67E22")) // Oranye
         } else if (!adaInternet()) {
-            tvStatus.text = "Membaca dari Cache"
-            tvStatus.setTextColor(Color.parseColor("#6B7280")) // Abu-abu
+            // Belum diunduh tapi masih tersimpan sementara (pernah dibuka online). Pakai bahasa user, bukan istilah "cache"
+            tvStatus.text = "Offline · Belum Diunduh"
+            tvStatus.setTextColor(Color.parseColor("#E67E22")) // Oranye
+            if (!sudahInfoUnduh) { sudahInfoUnduh = true; Toast.makeText(this, "Majalah ini belum diunduh. Unduh lewat menu ⋮ agar selalu bisa dibaca tanpa internet.", Toast.LENGTH_LONG).show() }
         } else {
             tvStatus.text = "Membaca Online"
             tvStatus.setTextColor(Color.parseColor("#00A859")) // Hijau
@@ -351,16 +357,12 @@ class EReaderActivity : AppCompatActivity() {
 
     private fun showOptionsMenu() {
         val popup = PopupMenu(this, btnOptions)
-        popup.menu.add("Daftar Isi")
-        popup.menu.add("Unduh Offline")
 
+        popup.menu.add(0, MENU_DAFTAR_ISI, 0, "Daftar Isi"); popup.menu.add(0, MENU_UNDUH, 1, "Unduh Offline")
         popup.setOnMenuItemClickListener { item ->
-            when (item.title.toString()) {
-                "Daftar Isi" -> {
-                    Toast.makeText(this, "Daftar Isi belum tersedia", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                "Unduh Offline" -> { unduhOffline(); true }
+            when (item.itemId) {
+                MENU_DAFTAR_ISI -> { Toast.makeText(this, "Daftar Isi belum tersedia", Toast.LENGTH_SHORT).show(); true }
+                MENU_UNDUH -> { unduhOffline(); true }
                 else -> false
             }
         }

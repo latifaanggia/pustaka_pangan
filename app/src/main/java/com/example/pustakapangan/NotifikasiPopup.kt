@@ -19,10 +19,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 // Pop-up notifikasi IN-APP
 object NotifikasiPopup {
-    interface PenerimaNotifikasi { fun onNotifikasiBaru(daftar: List<Notifikasi>) }
+    interface PenerimaNotifikasi {
+        fun onNotifikasiBaru(daftar: List<Notifikasi>)
+    }
     private const val INTERVAL_MS = 30_000L
     private const val TAG_BANNER = "banner_notifikasi"
     private val LAYAR_TANPA_POPUP = setOf(
@@ -54,7 +58,13 @@ object NotifikasiPopup {
         override fun onActivityDestroyed(a: Activity) {}
     })
 
-    private suspend fun cek(activity: AppCompatActivity) {
+    private val kunci = Mutex()
+
+    suspend fun cekSekarang(activity: AppCompatActivity) = cek(activity)
+
+    private suspend fun cek(activity: AppCompatActivity) = kunci.withLock { cekTanpaKunci(activity) }
+
+    private suspend fun cekTanpaKunci(activity: AppCompatActivity) {
         if (!SessionManager.isLoggedIn(activity) || CustomerRepository.getUserAktif(activity) == null) return
         val baru = try {
             NotifikasiRepository.ambilUntukPopup(activity)
