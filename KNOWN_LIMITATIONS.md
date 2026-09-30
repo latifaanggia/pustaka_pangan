@@ -9,16 +9,16 @@ Dokumen ini mencatat bagian-bagian dari Pustaka Pangan yang **masih simulasi/dum
 | Bagian | Kondisi Saat Ini | Yang Dibutuhkan untuk Produksi |
 |---|---|---|
 | Register & Sign In email | **Sudah sungguhan** lewat Supabase Auth (password di-*hash* oleh Supabase). Access token (berlaku 1 jam) diperpanjang otomatis pakai refresh token (`CustomerRepository.getTokenValid`) | Enkripsi token di HP (`EncryptedSharedPreferences`), verifikasi email |
-| SSO Google | Simulasi — tombol langsung dianggap berhasil tanpa memanggil Google Sign-In SDK | Google Identity Services + provider Google di Supabase Auth |
-| Ubah Password | Halaman `UbahPasswordActivity` ada, tapi belum tersambung ke Supabase Auth | Endpoint `auth/v1/user` (update password) |
+| SSO Google | Belum tersedia — tombol menampilkan pesan "SSO Google belum tersedia di prototipe ini" | Google Identity Services + provider Google di Supabase Auth |
+| Ubah Password | **Sudah berfungsi** — password lama diverifikasi, password baru disimpan lewat `auth/v1/user` | — |
 
 ## Data Majalah & Repository
 
 | Bagian | Kondisi Saat Ini | Yang Dibutuhkan untuk Produksi |
 |---|---|---|
 | Sumber data majalah | Dari tabel `majalah` di Supabase, cover dari Storage (bucket `cover-majalah`). Salinan terakhir disimpan di HP, jadi app tetap bisa dibuka **offline** | Pagination kalau katalog sudah ratusan edisi |
-| Pratinjau Editorial | Cuma **FRI Vol 07** yang punya gambar pratinjau multi-halaman (drawable di APK); majalah lain menampilkan cover saja | Halaman pratinjau di-upload ke Storage per majalah, atau di-render dari 6 halaman pertama PDF |
-| File PDF | PDF di Supabase Storage (bucket `pdf-majalah`, dikompres ±52% pakai Ghostscript `/ebook`). Tapi bucket masih **public** — siapa pun yang tahu URL-nya bisa mengunduh majalah berbayar tanpa membeli. Katalog baru 8 edisi demo (free plan: 1 GB storage, 5 GB egress/bulan) | Bucket private + RLS di `storage.objects` yang cek tabel `pembelian` + *signed URL* berumur pendek; katalog penuh 2018–2026 (±1,5 GB) butuh Pro plan atau `url_pdf` diarahkan ke server pustakapangan.com |
+| Pratinjau Editorial | Halaman 1–6 dibuat dari PDF (`tools/buat_pratinjau.bat`) dan di-upload ke bucket `pratinjau-majalah`; majalah tanpa PDF menampilkan cover | Otomatis dibuat server saat PDF baru di-upload |
+| File PDF | PDF di Supabase Storage (bucket `pdf-majalah`, dikompres ±52% pakai Ghostscript `/ebook`). Tapi bucket masih **public** — siapa pun yang tahu URL-nya bisa mengunduh majalah berbayar tanpa membeli. Katalog 29 edisi (2020–2026), 14 di antaranya sudah punya PDF (free plan: 1 GB storage, 5 GB egress/bulan). Ditunda setelah demo (keputusan 29/09) | Bucket private + RLS di `storage.objects` yang cek tabel `pembelian` + *signed URL* berumur pendek; katalog penuh 2018–2026 (±1,5 GB) butuh Pro plan atau `url_pdf` diarahkan ke server pustakapangan.com |
 | Menambah majalah baru | Lewat Supabase Table Editor (tanpa build ulang APK); semua user otomatis dapat notifikasi "Edisi Terbaru" | Panel admin/CMS dengan form upload cover + PDF |
 
 ## Koleksi & Fitur Unduh (Baca Offline)
@@ -63,3 +63,15 @@ Notifikasi disimpan di tabel `notifikasi` dan dibuat **otomatis oleh trigger dat
 - Masih pakai `findViewById` manual di semua tempat, belum `ViewBinding`
 - Belum ada unit test maupun UI test sama sekali
 - SSO, validasi password, dan hal-hal sensitif lain belum melalui pertimbangan keamanan (enkripsi data di `SharedPreferences`, dsb) karena memang belum ada data sungguhan yang perlu diamankan di tahap ini
+
+## Data & Integrasi dengan Web pustakapangan.com
+
+Database Supabase ini **terpisah** dari database web (MySQL). Struktur tabelnya meniru tabel web (`customer`, `tb_topup`, `tb_buy_product`, `product`), tetapi belum berisi data pelanggan asli, sehingga akun web belum bisa dipakai login di aplikasi.
+
+Rencana dari mentor (30/09): **API perantara (PHP)** di server kantor untuk sinkronisasi dua arah — Supabase mengirim perubahan lewat Database Webhook, perubahan di MySQL dikirim balik ke Supabase. Hal yang perlu diputuskan saat implementasi:
+- MySQL tidak bisa memanggil API langsung dari trigger → arah web ke Supabase memakai cron job atau dipanggil dari kode web
+- Penanda asal data supaya tidak terjadi loop sinkronisasi bolak-balik
+- Yang disinkronkan adalah transaksi (top up, pembelian), bukan angka saldo, supaya saldo tidak bentrok
+- Password akun web memakai format hash lama yang tidak didukung Supabase Auth → login akun lama diverifikasi lewat API perantara
+- Pemetaan ID: `customer_id` (angka) di web ↔ UUID di Supabase
+- Butuh akses server & database dari tim IT
